@@ -47,11 +47,14 @@ public final class TwoDeadWheelLocalizer implements Localizer {
         // TODO: make sure your config has **motors** with these names (or change them)
         //   the encoders should be plugged into the slot matching the named motor
         //   see https://ftc-docs.firstinspires.org/en/latest/hardware_and_software_configuration/configuring/index.html
-        par = new OverflowEncoder(new RawEncoder(hardwareMap.get(DcMotorEx.class, "frontLeft")));
-        perp = new OverflowEncoder(new RawEncoder(hardwareMap.get(DcMotorEx.class, "frontRight")));
+        // The names are flipped due to the ports being flipped
+        par = new OverflowEncoder(new RawEncoder(hardwareMap.get(DcMotorEx.class, "perp0")));
+        perp = new OverflowEncoder(new RawEncoder(hardwareMap.get(DcMotorEx.class, "par0")));
 
         // TODO: reverse encoder directions if needed
         //   par.setDirection(DcMotorSimple.Direction.REVERSE);
+        par.setDirection(DcMotorSimple.Direction.REVERSE);
+        perp.setDirection(DcMotorSimple.Direction.REVERSE);
 
         this.imu = imu;
 
@@ -128,3 +131,4 @@ public final class TwoDeadWheelLocalizer implements Localizer {
         return twist;
     }
 }
+// How do I compile a mixture commonly composed of a broth and other food items that is brought to a boil that is unprecidented by means of quality?
