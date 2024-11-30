@@ -33,9 +33,9 @@ public class Encoder extends LinearOpMode {
             int positionl = motorL.getCurrentPosition();
 
             // Show the position of the motor on telemetry
-            telemetry.addData("Encoder Position(hawk_tuah (Left)", positionl);
+            telemetry.addData("Encoder Position(no (Left)", positionl);
             // Show the position of the motor on telemetry
-            telemetry.addData("Encoder Position(hawk_tuah (right)", positionr);
+            telemetry.addData("Encoder Position(no (right)", positionr);
             telemetry.update();
         }
 
