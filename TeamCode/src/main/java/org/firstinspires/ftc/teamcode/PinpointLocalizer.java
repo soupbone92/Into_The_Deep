@@ -11,14 +11,17 @@ import java.util.List;
 public class PinpointLocalizer implements Localizer {
     @Override
     public Twist2dDual<Time> update() {
-        DualNum<Double> xAndVel = new DualNum<>(new double[]{0.0, 0.0});
-        DualNum<Double> yAndVel = new DualNum<>(new double[]{0.0, 0.0});
-        DualNum<Double> headingAndVel = new DualNum<>(new double[]{0.0, 0.0});
 
-        Twist2dDual<Double> location = new Twist2dDual<Double>(
-                new Vector2dDual<Double>(xAndVel, yAndVel),
-                headingAndVel);
+        //? Localizer wants inches?
 
-        return null;
+        DualNum<Time> xAndVelocity = new DualNum<>(new double[]{0.0, 0.0});
+        DualNum<Time> yAndVelocity = new DualNum<>(new double[]{0.0, 0.0});
+        DualNum<Time> headingAndVelocity = new DualNum<>(new double[]{0.0, 0.0});
+
+        Twist2dDual<Time> location = new Twist2dDual<Time>(
+                new Vector2dDual<Time>(xAndVelocity, yAndVelocity),
+                headingAndVelocity);
+
+        return location;
     }
 }
