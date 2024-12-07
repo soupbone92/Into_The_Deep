@@ -16,22 +16,23 @@ import java.util.ArrayList;
 @TeleOp
 
 public class HighTel extends LinearOpMode {
-
+    Hardware hw;
+    double powerScale = 1.0;
     @Override
     public void runOpMode() throws InterruptedException {
-    Hardware hw = new Hardware(hardwareMap);
+        double powerScale = 1.0;
+     hw = new Hardware(hardwareMap);
 
-
-        hw.blackGrip.setPosition(0);
+        hw.blackGrip.setPosition(0.5);
         hw.blueGrip.setPosition(0.5);
-        hw.blackExtend.setPosition(1);
-        hw.blueExtend.setPosition(0);
+        hw.blackExtend.setPosition(0.1);
+        hw.blueExtend.setPosition(0.9);
         waitForStart();
 
         while (opModeIsActive() && !isStopRequested()) {
 
             if (isStopRequested()) return;
-            drive(-gamepad1.left_stick_y,gamepad1.left_stick_x, gamepad1.right_stick_x, hw.imu, hw);
+            drive(-gamepad1.left_stick_y,gamepad1.left_stick_x, gamepad1.right_stick_x);
 
             if (gamepad1.options) {
                 hw.imu.resetYaw();
@@ -39,8 +40,8 @@ public class HighTel extends LinearOpMode {
 
             int bluePos = hw.blueLift.getCurrentPosition();
 
-            boolean downSafe = bluePos < -10;
-            boolean upSafe = bluePos > -4000;
+            boolean downSafe = bluePos < 480;
+            boolean upSafe = bluePos > -4750;
             if (gamepad2.dpad_up && upSafe){
                 hw.blueLift.setPower (-1);
                 hw.blackLift.setPower (-1);
@@ -48,31 +49,31 @@ public class HighTel extends LinearOpMode {
                 hw.blueLift.setPower (1);
                 hw.blackLift.setPower (1);
             } else {
-                hw.blueLift.setPower (0);
-                hw.blackLift.setPower (0);
+                hw.blueLift.setPower (-0.08);
+                hw.blackLift.setPower (-0.08);
                 hw.blueLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
                 hw.blackLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             }
             if (gamepad2.dpad_left) {
-                hw.blueExtend.setPosition (0);
-                hw.blackExtend.setPosition (1);
-            } else {
-                hw.blueExtend.setPosition (1);
-                hw.blackExtend.setPosition (0);
+                hw.blueExtend.setPosition (0.9);
+                hw.blackExtend.setPosition (0.1);
+            } else if (gamepad2.dpad_right){
+                hw.blueExtend.setPosition (0.1);
+                hw.blackExtend.setPosition (0.9);
             }
-            if (gamepad2.a) {
+            if (gamepad2.b) {
                 hw.blueGrip.setPosition (1);
                 hw.blackGrip.setPosition (0);
-            } else if (gamepad2.b) {
+            } else if (gamepad2.a) {
                 hw.blueGrip.setPosition (0);
                 hw.blackGrip.setPosition (1);
             }
             if (gamepad1.right_bumper) {
-                hw.power = 0.25;
+                powerScale = 0.25;
             } else if (gamepad1.left_bumper) {
-                hw.power = 0.5;
+                powerScale = 0.5;
             } else {
-                hw.power = 1;
+                powerScale = 1.0;
             }
 
             hw.booleanIncrementer = 0;
@@ -81,21 +82,17 @@ public class HighTel extends LinearOpMode {
     }
 
     //private void drive(double y, double x, double rx, GoBildaPinpointDriver imu,
-    private void drive(double y, double x, double rx, IMU imu,
-        Hardware hw)
+    private void drive(double y, double x, double rx)
     {
 
         if (gamepad1.options) {
             //imu.resetPosAndIMU();
-            imu.resetYaw();
+            hw.imu.resetYaw();
         }
 
-//        double botHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
-//        double rotX = x * Math.cos(-botHeading) - y * Math.sin(-botHeading);
-//        double rotY = x * Math.sin(-botHeading) + y * Math.cos(-botHeading);
 
         //double botHeading = imu.getHeading();
-        double botHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
+        double botHeading = hw.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
         // Show the position of the motor on telemetry
         telemetry.addData("bot heading)", botHeading);
         int bluePos = hw.blueLift.getCurrentPosition();
@@ -112,10 +109,10 @@ public class HighTel extends LinearOpMode {
         double frontRightPower = (rotY - rotX - rx) / denominator;
         double backRightPower = (rotY + rotX - rx) / denominator;
 
-        hw.frontLeft.setPower(frontLeftPower);
-        hw.backLeft.setPower(backLeftPower);
-        hw.frontRight.setPower(frontRightPower);
-        hw.backRight.setPower(backRightPower);
+        hw.frontLeft.setPower(frontLeftPower* powerScale);
+        hw.backLeft.setPower(backLeftPower* powerScale);
+        hw.frontRight.setPower(frontRightPower* powerScale);
+        hw.backRight.setPower(backRightPower* powerScale);
     }
 }
 
