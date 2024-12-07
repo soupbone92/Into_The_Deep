@@ -9,19 +9,20 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 public class PinpointLocalizer implements Localizer {
     GoBildaPinpointDriver odo; // Declare OpMode member for the Odometry Computer
 
-    public PinpointLocalizer (HardwareMap hardwareMap)
+    public PinpointLocalizer (HardwareMap hardwareMap, double TicksPerInch)
     {
         odo = hardwareMap.get(GoBildaPinpointDriver.class,"odo");
+        odo.setEncoderResolution(TicksPerInch *25.4);
     }
 
     @Override
     public Twist2dDual<Time> update() {
 
         //? Localizer wants inches?
-        double xloc = odo.getPosX();
-        double yloc = odo.getPosY();
-        double xvol = odo.getVelX();
-        double yvol = odo.getVelY();
+        double xloc = odo.getPosX()/25.4;
+        double yloc = odo.getPosY()/25.4;
+        double xvol = odo.getVelX()/25.4;
+        double yvol = odo.getVelY()/25.4;
         double head = odo.getHeading();
         double hvol = odo.getHeadingVelocity();
         DualNum<Time> xAndVelocity = new DualNum<>(new double[]{xloc, xvol});
