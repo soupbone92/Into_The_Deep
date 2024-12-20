@@ -27,8 +27,8 @@ public class Hardware {
      public Servo blackGrip;
      public Servo blueGrip;
 
-     //public GoBildaPinpointDriver imu;
-    public IMU imu;
+     public GoBildaPinpointDriver imu;
+    //public IMU imu;
     public double frontLeftPower;
     public double frontRightPower;
     public double backLeftPower;
@@ -83,13 +83,13 @@ public class Hardware {
         blackGrip = hardwareMap.servo.get("blackGrip");
         blueGrip = hardwareMap.servo.get("blueGrip");
 
-        //imu = hardwareMap.get(GoBildaPinpointDriver.class, "odo");
-        //imu.resetPosAndIMU();
-        imu = hardwareMap.get(IMU.class, "imu");
-        IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
-                RevHubOrientationOnRobot.LogoFacingDirection.UP,
-                RevHubOrientationOnRobot.UsbFacingDirection.FORWARD));
-        imu.initialize(parameters);
+        imu = hardwareMap.get(GoBildaPinpointDriver.class, "odo");
+        imu.resetPosAndIMU();
+       // imu = hardwareMap.get(IMU.class, "imu");
+//        IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
+//                RevHubOrientationOnRobot.LogoFacingDirection.UP,
+//                RevHubOrientationOnRobot.UsbFacingDirection.FORWARD));
+        //imu.initialize(parameters);
 
         // Adjust the orientation parameters to match your robot
 //        IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
