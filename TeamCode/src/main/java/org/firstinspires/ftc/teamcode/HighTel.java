@@ -32,34 +32,34 @@ public class HighTel extends LinearOpMode {
         while (opModeIsActive() && !isStopRequested()) {
 
             if (isStopRequested()) return;
-            drive(-gamepad1.left_stick_y,gamepad1.left_stick_x, gamepad1.right_stick_x);
+            drive(-gamepad1.left_stick_y,gamepad1.left_stick_x, gamepad1.right_stick_x,powerScale,hw);
 
             if (gamepad1.options) {
-                hw.imu.resetYaw();
+                //hw.imu.resetYaw();
             }
 
             int bluePos = hw.blueLift.getCurrentPosition();
 
             boolean downSafe = bluePos < 480;
             boolean upSafe = bluePos > -4750;
-            if (gamepad2.dpad_up && upSafe){
-                hw.blueLift.setPower (-1);
-                hw.blackLift.setPower (-1);
-            } else if (gamepad2.dpad_down && downSafe) {
-                hw.blueLift.setPower (1);
-                hw.blackLift.setPower (1);
-            } else {
-                hw.blueLift.setPower (-0.08);
-                hw.blackLift.setPower (-0.08);
-                hw.blueLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-                hw.blackLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            }
+//            if (gamepad2.dpad_up && upSafe){
+//                hw.blueLift.setPower (-1);
+//                hw.blackLift.setPower (-1);
+//            } else if (gamepad2.dpad_down && downSafe) {
+//                hw.blueLift.setPower (1);
+//                hw.blackLift.setPower (1);
+//            } else {
+//                hw.blueLift.setPower (-0.08);
+//                hw.blackLift.setPower (-0.08);
+//                hw.blueLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+//                hw.blackLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+//            }
             if (gamepad2.dpad_left) {
-                hw.blueExtend.setPosition (0.9);
-                hw.blackExtend.setPosition (0.1);
+                hw.blueExtend.setPosition (0.6);
+                hw.blackExtend.setPosition (0.4);
             } else if (gamepad2.dpad_right){
-                hw.blueExtend.setPosition (0.1);
-                hw.blackExtend.setPosition (0.9);
+                hw.blueExtend.setPosition (0.4);
+                hw.blackExtend.setPosition (0.6);
             }
             if (gamepad2.b) {
                 hw.blueGrip.setPosition (1);
@@ -81,24 +81,42 @@ public class HighTel extends LinearOpMode {
         }
     }
 
+    double startEncX = 0;
+    double startEncY = 0;
+
     //private void drive(double y, double x, double rx, GoBildaPinpointDriver imu,
-    private void drive(double y, double x, double rx)
+    private void drive(double y, double x, double rx ,double powerScale,Hardware hw)
     {
 
         if (gamepad1.options) {
-            //imu.resetPosAndIMU();
-            hw.imu.resetYaw();
+            hw.imu.resetPosAndIMU();
+            hw.imu.recalibrateIMU();
+            startEncX = hw.imu.getEncoderX();
+            startEncY = hw.imu.getEncoderY();
+            hw.imu.setEncoderResolution(74.5);
+            //hw.imu.resetYaw();
         }
 
 
-        //double botHeading = imu.getHeading();
-        double botHeading = hw.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
+        hw.imu.update();
+        double botHeading = hw.imu.getHeading();
+        double xo = hw.imu.getPosX();
+        double yo = hw.imu.getPosY();
+        double xv = hw.imu.getVelX();
+        double yv = hw.imu.getVelY();
+        double xt = startEncX - hw.imu.getEncoderX();
+        double yt = startEncY - hw.imu.getEncoderY();
+
+       // double botHeading = hw.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
         // Show the position of the motor on telemetry
         telemetry.addData("bot heading)", botHeading);
-        int bluePos = hw.blueLift.getCurrentPosition();
-        telemetry.addData("blueLift: ", bluePos);
-//        telemetry.addData("x:", imu.getPosX());
-//        telemetry.addData("y:", imu.getPosY());
+        //int bluePos = hw.blueLift.getCurrentPosition();
+        telemetry.addData("Position X", xo);
+        telemetry.addData("Position Y", yo);
+        telemetry.addData("Velocity X", xv);
+        telemetry.addData("Velocity Y", yv);
+        telemetry.addData("X", xt);
+        telemetry.addData("Y", yt);
         telemetry.update();
         double rotX = x * Math.cos(-botHeading) - y * Math.sin(-botHeading);
         double rotY = x * Math.sin(-botHeading) + y * Math.cos(-botHeading);

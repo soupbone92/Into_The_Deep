@@ -21,9 +21,10 @@ public final class StraightLineAutonomous extends LinearOpMode {
             TrajectoryActionBuilder actionBuilder = drive.actionBuilder(beginPose);
 
             Actions.runBlocking(actionBuilder
-                    .splineTo(new Vector2d(30, -16), Math.toRadians(0))
+                                    .strafeTo(new Vector2d(0, -16))
+                    //.splineTo(new Vector2d(30, -16), Math.toRadians(0))
                    // .turnTo(Math.toRadians(1))
-                    .splineTo(new Vector2d(96, 24), Math.toRadians(0))
+                    //.splineTo(new Vector2d(96, 24), Math.toRadians(0))
                     .build());
         }
     }
