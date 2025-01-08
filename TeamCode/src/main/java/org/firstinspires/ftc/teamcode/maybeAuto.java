@@ -9,8 +9,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
-
-@TeleOp
+@Autonomous
+//@TeleOp
 public class maybeAuto extends LinearOpMode {
     Hardware hw;
     PinpointLocalizer pl;
@@ -77,7 +77,7 @@ public class maybeAuto extends LinearOpMode {
 
         while (!isStopRequested())
         {
-            if (!gamepad1.a)
+            //if (!gamepad1.a)
             {
                     frontLeft.setPower(0);
                     frontRight.setPower(0);
@@ -106,7 +106,7 @@ public class maybeAuto extends LinearOpMode {
                     //            telemetry.addData("Velocity Head", hvol);
                     telemetry.update();
             }
-            else
+            //else
             {
                 while (delta < 36 && !isStopRequested())
                 {

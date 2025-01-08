@@ -16,6 +16,7 @@ public class Hardware {
     // Are these numbers the lower and upper limits of the motors?
     int lowerLimit = 30;
     int upperLimit = 1500;
+    public double mmToInch = 1.0/25.4;
      public DcMotor frontRight;
      public DcMotor frontLeft;
      public DcMotor backLeft;
@@ -85,6 +86,11 @@ public class Hardware {
 
         imu = hardwareMap.get(GoBildaPinpointDriver.class, "odo");
         imu.resetPosAndIMU();
+
+
+
+
+
        // imu = hardwareMap.get(IMU.class, "imu");
 //        IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
 //                RevHubOrientationOnRobot.LogoFacingDirection.UP,
