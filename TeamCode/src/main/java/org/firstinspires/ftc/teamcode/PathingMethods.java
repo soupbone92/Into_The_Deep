@@ -18,7 +18,7 @@ public class PathingMethods {
 
     public static void driveStraightY(Hardware hw, LinearOpMode op, double distanceInches, double power)
     {
-
+        power = Math.min(0.5, power);
         double yloc = Math.abs(hw.pinpoint.getPosY() * hw.mmToInch);
         double head = hw.pinpoint.getHeading();
         double inity = Math.abs(hw.pinpoint.getPosY() * hw.mmToInch);
@@ -80,7 +80,7 @@ public class PathingMethods {
     }
     public static void driveStraightX(Hardware hw, LinearOpMode op, double distanceInches, double power)
     {
-
+        power = Math.min(0.5, power);
         double xloc = Math.abs(hw.pinpoint.getPosX() * hw.mmToInch);
         double head = hw.pinpoint.getHeading();
         double initx = Math.abs(hw.pinpoint.getPosY() * hw.mmToInch);
@@ -185,34 +185,6 @@ public class PathingMethods {
         return hdelta;
     }
 
-
-    //    public void Ylinear(double endDistance, double power) {
-//        power = Math.min(power, 0.5);
-//
-//        while (ydelta < endDistance && !isStopRequested()) {
-//            power = pid(ydelta, endDistance, power);
-//
-//            if (hdelta > 0) {
-//                hw.frontLeft.setPower(power + correction(hdelta));
-//                hw.frontRight.setPower(power - correction(hdelta));
-//                hw.backLeft.setPower(power + correction(hdelta));
-//                hw.backRight.setPower(power - correction(hdelta));
-//            } else if (hdelta < 0) {
-//                hw.frontLeft.setPower(power - correction(hdelta));
-//                hw.frontRight.setPower(power + correction(hdelta));
-//                hw.backLeft.setPower(power - correction(hdelta));
-//                hw.backRight.setPower(power + correction(hdelta));
-//            } else {
-//                hw.frontLeft.setPower(power);
-//                hw.frontRight.setPower(power);
-//                hw.backLeft.setPower(power);
-//                hw.backRight.setPower(power);
-//            }
-//            hw.frontLeft.setPower(0);
-//            hw.frontRight.setPower(0);
-//            hw.backLeft.setPower(0);
-//            hw.backRight.setPower(0);
-//        }
 
 
 }
