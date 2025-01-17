@@ -28,7 +28,7 @@ public class Hardware {
      public Servo blackGrip;
      public Servo blueGrip;
 
-     public GoBildaPinpointDriver imu;
+     public GoBildaPinpointDriver pinpoint;
     //public IMU imu;
     public double frontLeftPower;
     public double frontRightPower;
@@ -84,8 +84,8 @@ public class Hardware {
         blackGrip = hardwareMap.servo.get("blackGrip");
         blueGrip = hardwareMap.servo.get("blueGrip");
 
-        imu = hardwareMap.get(GoBildaPinpointDriver.class, "odo");
-        imu.resetPosAndIMU();
+        pinpoint = hardwareMap.get(GoBildaPinpointDriver.class, "pinpoint");
+        pinpoint.resetPosAndIMU();
 
 
 

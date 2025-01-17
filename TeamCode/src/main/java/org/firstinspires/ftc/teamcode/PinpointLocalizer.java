@@ -7,10 +7,10 @@ import com.acmerobotics.roadrunner.Vector2dDual;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class PinpointLocalizer implements Localizer {
-    GoBildaPinpointDriver odo; // Declare OpMode member for the Odometry Computer
+    public GoBildaPinpointDriver odo; // Declare OpMode member for the Odometry Computer
     public PinpointLocalizer (HardwareMap hardwareMap, double TicksPerInch)
     {
-        odo = hardwareMap.get(GoBildaPinpointDriver.class,"odo");
+        odo = hardwareMap.get(GoBildaPinpointDriver.class,"pinpoint");
         odo.setEncoderResolution(8192.0/100.53);
     }
 
