@@ -67,7 +67,7 @@ public class PathingMethods {
         @Override
         public double getPosition() {
             // Return pos in inches.
-            return hw.imuPos.getPosX();
+            return hw.imuPos.getPosY();
         }
 
         void setPower(

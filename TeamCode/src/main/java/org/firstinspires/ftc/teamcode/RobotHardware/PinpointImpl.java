@@ -14,6 +14,7 @@ public class PinpointImpl implements ImuPositionWrapper {
         pp.setEncoderDirections(
                 GoBildaPinpointDriver.EncoderDirection.FORWARD,
                 GoBildaPinpointDriver.EncoderDirection.REVERSED);
+        pp.setEncoderResolution(Constants.wheelCircumference);
     }
 
     @Override

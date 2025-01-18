@@ -23,16 +23,28 @@ public class SickAutonomous extends LinearOpMode {
         PathingMethods.WhichAxis leftRight = new PathingMethods.XAxisDirection(hw);
 
         // Move forward/back
-        PathingMethods.driveStraight(forwardBack, this, 30, power);
-        PathingMethods.driveStraight(forwardBack, this, -30, power);
+
+        pause();
+        PathingMethods.driveStraight(forwardBack, this, 18, power);
+        pause();
+        PathingMethods.driveStraight(forwardBack, this, -18, power);
 
         // Strafe left/right
-        PathingMethods.driveStraight(leftRight, this, 30, power);
-        PathingMethods.driveStraight(leftRight, this, -30, power);
+        pause();
+        PathingMethods.driveStraight(leftRight, this, 18, power);
+        pause();
+        PathingMethods.driveStraight(leftRight, this, -18, power);
 
         //Rotate
+        pause();
         PathingMethods.Rotate(hw, this, 90, power);
+        pause();
         PathingMethods.Rotate(hw, this, -90, power);
+    }
+
+    private void pause() {
+        while(!gamepad1.b)
+            sleep(250);
     }
 
     Hardware hw;
