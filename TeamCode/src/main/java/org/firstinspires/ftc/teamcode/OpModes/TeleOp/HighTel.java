@@ -20,7 +20,7 @@ public class HighTel extends LinearOpMode {
         waitForStart();
 
         while (opModeIsActive() && !isStopRequested()) {
-            controlLift();
+            //controlLift();
             controlExtender();
             controlGrip();
             controlResetImu();

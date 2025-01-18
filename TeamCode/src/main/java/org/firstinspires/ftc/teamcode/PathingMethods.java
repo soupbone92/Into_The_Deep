@@ -45,7 +45,7 @@ public class PathingMethods {
             // Return pos in inches.
             return hw.imuPos.getPosX();
         }
-
+        @Override
         void setPower(
                 double power,
                 double correction)
@@ -69,7 +69,7 @@ public class PathingMethods {
             // Return pos in inches.
             return hw.imuPos.getPosY();
         }
-
+        @Override
         void setPower(
                 double power,
                 double correction)
@@ -79,6 +79,7 @@ public class PathingMethods {
             hw.backLeft.setPower(power + correction);
             hw.backRight.setPower(power - correction);
         }
+
     }
 
     public static void driveStraight(
