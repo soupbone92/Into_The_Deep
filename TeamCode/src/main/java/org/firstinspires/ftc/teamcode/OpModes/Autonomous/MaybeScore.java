@@ -1,4 +1,5 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.OpModes.Autonomous;
+
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -67,8 +68,6 @@ public class MaybeScore extends LinearOpMode {
             frontRight.setPower(-1);
             backLeft.setPower(-1);
             backRight.setPower(1);
-
-
         }
 
     }
