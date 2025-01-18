@@ -1,192 +1,225 @@
 package org.firstinspires.ftc.teamcode;
-
-
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-// Please remember to alocate ex:
-// hw = new Hardware(hardwareMap);
+import org.firstinspires.ftc.teamcode.RobotHardware.Hardware;
+import org.firstinspires.ftc.teamcode.Units.AngularUnit;
 
 public class PathingMethods {
-    Hardware hw;
 
-    public static double correction(double headingDelta) {
-        double correction = 0.0;
-        if (Math.abs(headingDelta) > 0.02) {
-            correction = 0.1;
+    public abstract static class WhichAxis {
+        // abstract class to use same code for driveStraight
+        // for Y (forward/back) or X (strafe left/right) direction.
+
+        // Need access to the hardware to get heading and pos.
+        // and to set motor power depending direction being controlled.
+        final Hardware hw;
+
+        WhichAxis(Hardware hw_in) {
+            this.hw = hw_in;
         }
-        return correction;
+
+        // Get the current 1d position
+        abstract double getPosition();
+
+        // Set the power to move in direction
+        abstract void setPower(
+                double power,
+                double correction);
+
+        double getHeading() {
+            return hw.imuPos.getHeading(AngularUnit.Degree);
+        }
+
+        public void update() {
+            hw.imuPos.update();
+        }
     }
 
-    public static void driveStraightY(Hardware hw, LinearOpMode op, double distanceInches, double power)
-    {
-        power = Math.min(0.5, power);
-        double yloc = Math.abs(hw.pinpoint.getPosY() * hw.mmToInch);
-        double head = hw.pinpoint.getHeading();
-        double inity = Math.abs(hw.pinpoint.getPosY() * hw.mmToInch);
-        double initHeader = hw.pinpoint.getHeading();
-        double hdelta = head - initHeader;
-        double correction = 0;
-        double targetdelta = distanceInches - yloc;
+    public static class XAxisDirection extends WhichAxis {
 
-        double sign = 1;
-
-        if (distanceInches < 0) {
-            sign = -1;
-            power *= sign;
-            distanceInches *= sign;
-            inity *= sign;
+        public XAxisDirection(Hardware hw) {
+            super(hw);
         }
-        double target = inity + distanceInches;
-        targetdelta = target - yloc;
-        while (targetdelta > 0 && !op.isStopRequested())
+
+        @Override
+        public double getPosition() {
+            // Return pos in inches.
+            return hw.imuPos.getPosX();
+        }
+
+        void setPower(
+                double power,
+                double correction)
         {
-            hw.pinpoint.update();
-            yloc = hw.pinpoint.getPosY() * hw.mmToInch * sign;
-            head = hw.pinpoint.getHeading();
-            targetdelta = target - yloc;
-            hdelta = head - initHeader;
-            double yDelta = yloc - inity;
-            power = PathingMethods.powerRamp(targetdelta, yDelta, power);
-            power *= sign;
-            op.telemetry.addData("bot heading)", head);
-            op.telemetry.addData("Position Y", yloc);
-            op.telemetry.addData("Initial y", inity);
-            op.telemetry.addData("power", power);
-            op.telemetry.addData("Delta y", targetdelta);
-            op.telemetry.addData("Delta Heading", hdelta);
-
-            correction = 0;
-            op.telemetry.update();
-            if (Math.abs(hdelta) > .02) {
-                correction = 0.1;
-            }
-
-            if (hdelta > 0) {
-                hw.frontLeft.setPower(power + correction);
-                hw.frontRight.setPower(power - correction);
-                hw.backLeft.setPower(power + correction);
-                hw.backRight.setPower(power - correction);
-            } else if (hdelta < 0) {
-                hw.frontLeft.setPower(power - correction);
-                hw.frontRight.setPower(power + correction);
-                hw.backLeft.setPower(power - correction);
-                hw.backRight.setPower(power + correction);
-            } else {
-                hw.frontLeft.setPower(power);
-                hw.frontRight.setPower(power);
-                hw.backLeft.setPower(power);
-                hw.backRight.setPower(power);
-            }
+            hw.frontLeft.setPower(-(power + correction));
+            hw.frontRight.setPower(power - correction);
+            hw.backLeft.setPower(power + correction);
+            hw.backRight.setPower(-(power - correction));
         }
+
     }
-    public static void driveStraightX(Hardware hw, LinearOpMode op, double distanceInches, double power)
-    {
-        power = Math.min(0.5, power);
-        double xloc = Math.abs(hw.pinpoint.getPosX() * hw.mmToInch);
-        double head = hw.pinpoint.getHeading();
-        double initx = Math.abs(hw.pinpoint.getPosY() * hw.mmToInch);
-        double initHeader = hw.pinpoint.getHeading();
-        double hdelta = head - initHeader;
-        double correction = 0;
-        double targetdelta = distanceInches - xloc;
 
-        double sign = 1;
+    public static class YAxisDirection extends WhichAxis {
 
-        if (distanceInches < 0) {
-            sign = -1;
-            power *= sign;
-            distanceInches *= sign;
-            initx *= sign;
+        public YAxisDirection(Hardware hw_in) {
+            super(hw_in);
         }
-        double target = initx + distanceInches;
-        targetdelta = target - xloc;
-        while (targetdelta > 0 && !op.isStopRequested())
+
+        @Override
+        public double getPosition() {
+            // Return pos in inches.
+            return hw.imuPos.getPosX();
+        }
+
+        void setPower(
+                double power,
+                double correction)
         {
-            hw.pinpoint.update();
-            xloc = hw.pinpoint.getPosY() * hw.mmToInch * sign;
-            head = hw.pinpoint.getHeading();
-            targetdelta = target - xloc;
-            hdelta = head - initHeader;
-            double xDelta = xloc - initx;
-            power = PathingMethods.powerRamp(targetdelta, xDelta, power);
-            power *= sign;
-            op.telemetry.addData("bot heading)", head);
-            op.telemetry.addData("Position Y", xloc);
-            op.telemetry.addData("Initial y", initx);
-            op.telemetry.addData("power", power);
-            op.telemetry.addData("Delta y", targetdelta);
-            op.telemetry.addData("Delta Heading", hdelta);
-
-            correction = 0;
-            op.telemetry.update();
-            if (Math.abs(hdelta) > .02) {
-                correction = 0.1;
-            }
-
-            if (hdelta > 0) {
-                hw.frontLeft.setPower(-power + correction);
-                hw.frontRight.setPower(power - correction);
-                hw.backLeft.setPower(power + correction);
-                hw.backRight.setPower(-power - correction);
-            } else if (hdelta < 0) {
-                hw.frontLeft.setPower(-power - correction);
-                hw.frontRight.setPower(power + correction);
-                hw.backLeft.setPower(power - correction);
-                hw.backRight.setPower(-power + correction);
-            } else {
-                hw.frontLeft.setPower(-power);
-                hw.frontRight.setPower(power);
-                hw.backLeft.setPower(power);
-                hw.backRight.setPower(-power);
-            }
+            hw.frontLeft.setPower(power + correction);
+            hw.frontRight.setPower(power - correction);
+            hw.backLeft.setPower(power + correction);
+            hw.backRight.setPower(power - correction);
         }
     }
 
+    public static void driveStraight(
+            WhichAxis direction,
+            LinearOpMode opMode,
+            double distanceInches,
+            double nominalPower)
+    {
+        // Drive linear/straight distanceInches in WhichAxis.
+        // WhichAxis abstracts moving either Y (forward/backward) or
+        // X (strafe left/right).
+
+        // opMode is sending telemetry and checking for stop.
+
+        double loc = direction.getPosition();
+        double initialLoc = loc;
+        double initialHeading = direction.getHeading();
+        double mirror = 1;  // factor to mirror if needed.
+
+        // Mirror the problem into positive so the same while loop can be used.
+        if (distanceInches < 0) {
+            mirror = -1;
+            distanceInches *= mirror;
+            initialLoc *= mirror;
+        }
+
+        double target = initialLoc + distanceInches;
+        double targetDelta = target - loc;
+
+        while (targetDelta > 0 && !opMode.isStopRequested()) {
+            direction.update();
+            loc = direction.getPosition() * mirror;
+            double heading = direction.getHeading();
+            targetDelta = target - loc;
+            double hDelta = heading - initialHeading;
+            double yDelta = loc - initialLoc;
+
+            double rampedPower = PathingMethods.powerRamp(targetDelta, yDelta, nominalPower);
+
+            // mirror power to handle going backward.
+            rampedPower *= mirror;
+
+            TelemetryHelper.UpdateTelemetry(opMode.telemetry,
+                "bot heading", heading,
+                "Position Y", loc,
+                "Initial y", initialLoc,
+                "power", rampedPower,
+                "Delta y", targetDelta,
+                "Delta Heading", hDelta);
+
+            double correction = 0;
+            if (Math.abs(hDelta) > .02) {
+               if(hDelta > 0)
+                   correction = 0.1;
+               else if (hDelta < 0)
+                   correction = -0.1;
+               else
+                   correction = 0;
+            }
+
+            // mirror the correction.
+            correction *= mirror;
+
+            direction.setPower(
+                    rampedPower,
+                    correction);
+        }
+    }
 
     public static double powerRamp(double delta, double traveled, double nominalPower) {
+
+        // computer power based on distance traveled and distance to target.
+        // |u||------Steady-----|d|
+        //   /-------------------\
+        //  /                     \
+        // /                       \
+        // Ramp up during 'u' segment.
+        // Ramp down during 'd' segment.
+        // Hold steady between
+        // Ramp up/down using y-mx+b line
+        // b = 0.
+        // Up and down are mirrored/symmetric so use the same
+        // equation can be used with b = 0.
+
         nominalPower = Math.min(nominalPower, 0.5);
-        double Ru = 2.0;
+        double Ru = 2.0; //  distance travel to scale to nominal power.
+        double Rd = 2.0; // distance left to target to begin scale down to zero/stop.
         double m = nominalPower / 2.0;
-        double y = nominalPower;
+        double rampedPower = nominalPower;
+
+        // Both us Ru distance but that may change
+        // so both if/else if exist.
         if (traveled < Ru) {
-            y = m * traveled;
-            y = Math.max(y, 0.1);
+            // Segment 'u'
+            rampedPower = m * traveled;
+            rampedPower = Math.max(rampedPower, 0.1);
+        } else if (delta < Rd) {
+            // Segment 'd'
+            rampedPower = m * traveled;
+            rampedPower = Math.max(rampedPower, 0.1);
         }
-        else if (delta < Ru) {
-            y = m * traveled;
-            y = Math.max(y, 0.1);
 
+        // Power-down if at target.
+        if(delta < 0)
+            rampedPower = 0.0;
 
-        }
-        return Math.max(y, 0.1);
-
-
+        return rampedPower;
     }
 
+    public static void Rotate(Hardware hw, LinearOpMode opmode, double rotateDegrees, double power) {
 
-    public static double Rotate(Hardware hw, LinearOpMode lo, double targetDegrees, double power) {
-        double sign = 1.0;
-        if (targetDegrees < 0) {
-            sign = -1.0;
-            power *= sign;
+        // rotateDegrees = how far to rotate from current.
+        //  positive value is counter-clockwise rotation.
+        // Cannot rotate more that 180 degrees.
+
+        // If rotateDegrees is negative
+        // mirror everything across zero to simplify logic.
+        double mirror = 1.0;
+        if (rotateDegrees < 0) {
+            mirror = -1.0;
+            power *= mirror;
+            rotateDegrees *= -1;
         }
-        double target = Math.toRadians(targetDegrees);
-        double hdelta = hw.pinpoint.getHeading() - target;
-        while (hdelta < 0 && !lo.isStopRequested()) {
+
+        hw.imuPos.update();
+        double startDegrees = hw.imuPos.getHeading(AngularUnit.Degree);
+        double targetDegrees = startDegrees + rotateDegrees;
+
+        double hdelta = targetDegrees - startDegrees;
+
+        while (hdelta > 0 && !opmode.isStopRequested()) {
             hw.frontLeft.setPower(-power);
             hw.frontRight.setPower(power);
             hw.backLeft.setPower(-power);
             hw.backRight.setPower(power);
 
-            hw.pinpoint.update();
-            double newHeading = hw.pinpoint.getHeading();
-            hdelta = newHeading - target;
-
+            hw.imuPos.update();
+            double currentHeading = hw.imuPos.getHeading(AngularUnit.Degree) * mirror;
+            hdelta = targetDegrees - currentHeading;
         }
-        return hdelta;
     }
-
-
-
 }
 
 
