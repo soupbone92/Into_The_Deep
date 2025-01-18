@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.tuning;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.PathingMethods;
-import org.firstinspires.ftc.teamcode.Hardware;
+import org.firstinspires.ftc.teamcode.RobotHardware.Hardware;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -24,17 +24,17 @@ public class RotateMove extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         hw = new Hardware(hardwareMap);
-        hw.pinpoint.resetPosAndIMU();
+        hw.imuPos.reset();
         sleep(500);
 
 
-        double InetH = Math.abs(hw.pinpoint.getHeading());
+        double InetH = Math.abs(hw.imuPos.getHeading());
 
 
 //        double power = ah.pid(ydelta, endDistance, setPower);
 
         waitForStart();
-        hw.pinpoint.update();
+        hw.imuPos.update();
 
         hw.frontLeft.setPower(0);
         hw.frontRight.setPower(0);
@@ -53,7 +53,7 @@ public class RotateMove extends LinearOpMode {
         }
 
         double target = Math.toRadians(90);
-        double heading = hw.pinpoint.getHeading();
+        double heading = hw.imuPos.getHeading();
         double hdelta = heading - target;
 
         PathingMethods.Rotate(hw, this, 90, power);
