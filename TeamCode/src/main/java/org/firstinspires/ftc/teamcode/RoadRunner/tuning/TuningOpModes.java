@@ -11,22 +11,21 @@ import com.qualcomm.robotcore.eventloop.opmode.OpModeManager;
 import com.qualcomm.robotcore.eventloop.opmode.OpModeRegistrar;
 
 import org.firstinspires.ftc.robotcore.internal.opmode.OpModeMeta;
-import org.firstinspires.ftc.teamcode.RoadRunner.tuning.LocalizationTest;
-import org.firstinspires.ftc.teamcode.RoadRunner.tuning.ManualFeedbackTuner;
-import org.firstinspires.ftc.teamcode.RoadRunner.tuning.SplineTest;
+import org.firstinspires.ftc.teamcode.*;
 import org.firstinspires.ftc.teamcode.RoadRunner.MecanumDrive;
 import org.firstinspires.ftc.teamcode.RoadRunner.PinpointDrive;
 import org.firstinspires.ftc.teamcode.RoadRunner.SparkFunOTOSDrive;
 import org.firstinspires.ftc.teamcode.RoadRunner.TankDrive;
 import org.firstinspires.ftc.teamcode.RoadRunner.ThreeDeadWheelLocalizer;
 import org.firstinspires.ftc.teamcode.RoadRunner.TwoDeadWheelLocalizer;
+import org.firstinspires.ftc.teamcode.RoadRunner.tuning.ManualFeedbackTuner;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public final class TuningOpModes {
-    public static final Class<?> DRIVE_CLASS = PinpointDrive.class; // TODO: DONE change to your drive class i.e. PinpointDrive if using pinpoint
+    public static final Class<?> DRIVE_CLASS = PinpointDrive.class; // DONE: change to your drive class i.e. PinpointDrive if using pinpoint
 
     public static final String GROUP = "quickstart";
     public static final boolean DISABLED = false;
