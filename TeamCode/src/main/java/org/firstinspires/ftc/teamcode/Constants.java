@@ -21,9 +21,9 @@ public class Constants {
     // For pinpoint y is strafe and x is forward.
     // Offset along the x-axis from where you want 0,0 to be relative to the robot
     // for the forward encoder.
-    public static final double xForwardEncoderOffsetInches = ;
+    public static final double xForwardEncoderOffsetInches = 128*mmToInch;
 
     // Offset along the y-axis from where you want 0,0 to be relative to the robot
     // for the strafe encoder.
-    public static final double yStrafeEncoderOffsetInches =
+    public static final double yStrafeEncoderOffsetInches = 122*mmToInch;
 }
