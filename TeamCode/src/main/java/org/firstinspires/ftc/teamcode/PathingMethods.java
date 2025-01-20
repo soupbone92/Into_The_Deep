@@ -7,7 +7,7 @@ public class PathingMethods {
 
     public abstract static class WhichAxis {
         // abstract class to use same code for driveStraight
-        // for Y (forward/back) or X (strafe left/right) direction.
+        // for X (forward/back) or Y (strafe left/right) direction.
 
         // Need access to the hardware to get heading and pos.
         // and to set motor power depending direction being controlled.
@@ -34,9 +34,10 @@ public class PathingMethods {
         }
     }
 
-    public static class XAxisDirection extends WhichAxis {
+    // Forward is X axis in Roadrunner land.
+    public static class ForwardAxisDirection extends WhichAxis {
 
-        public XAxisDirection(Hardware hw) {
+        public ForwardAxisDirection(Hardware hw) {
             super(hw);
         }
 
@@ -58,9 +59,10 @@ public class PathingMethods {
 
     }
 
-    public static class YAxisDirection extends WhichAxis {
+    // Strafe is Y axis in Roadrunner land.
+    public static class StrafeAxisDirection extends WhichAxis {
 
-        public YAxisDirection(Hardware hw_in) {
+        public StrafeAxisDirection(Hardware hw_in) {
             super(hw_in);
         }
 
