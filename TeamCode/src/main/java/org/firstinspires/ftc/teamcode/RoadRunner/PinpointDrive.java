@@ -16,6 +16,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
+import org.firstinspires.ftc.teamcode.Constants;
 import org.firstinspires.ftc.teamcode.RoadRunner.messages.*;
 
 /**
@@ -55,7 +56,7 @@ public class PinpointDrive extends MecanumDrive {
         To get this value from inPerTick, first convert the value to millimeters (multiply by 25.4)
         and then take its inverse (one over the value)
          */
-        public double encoderResolution = GoBildaPinpointDriverRR.goBILDA_4_BAR_POD;
+        public double encoderResolution = Constants.encoderResolution;
 
         /*
         Set the direction that each of the two odometry pods count. The X (forward) pod should
