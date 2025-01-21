@@ -219,6 +219,12 @@ public class PathingMethods {
             hw.imuPos.update();
             double currentHeading = hw.imuPos.getHeading(AngularUnit.Degree) * mirror;
             hdelta = targetDegrees - currentHeading;
+
+            TelemetryHelper.UpdateTelemetry(opmode.telemetry,
+                    "currentHeading", currentHeading,
+                    "targetDegrees", targetDegrees,
+                    "hdelta", hdelta,
+                    "power", power);
         }
     }
 }
