@@ -42,9 +42,16 @@ public class Hardware {
         blueLift = hardwareMap.dcMotor.get("blueLift");
         blackLift = hardwareMap.dcMotor.get("blackLift");
 
+        // Reverse direction of blue lift.
         blueLift.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        // Set brake on zero power
         blueLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         blackLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        // Set mode and reset encoder.
+        blueLift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        blackLift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
 
     private void InitDriveMotors(HardwareMap hardwareMap) {
@@ -76,4 +83,6 @@ public class Hardware {
 
     // ImuWrapper is implemented for IMU or Pinpoint.
     public ImuPositionWrapper imuPos;
+
+
 }

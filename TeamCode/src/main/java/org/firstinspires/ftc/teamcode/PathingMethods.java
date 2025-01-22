@@ -34,9 +34,9 @@ public class PathingMethods {
         }
     }
 
-    public static class XAxisDirection extends WhichAxis {
+    public static class StrafeDirection extends WhichAxis {
 
-        public XAxisDirection(Hardware hw) {
+        public StrafeDirection(Hardware hw) {
             super(hw);
         }
 
@@ -58,9 +58,9 @@ public class PathingMethods {
 
     }
 
-    public static class YAxisDirection extends WhichAxis {
+    public static class ForwardDirection extends WhichAxis {
 
-        public YAxisDirection(Hardware hw_in) {
+        public ForwardDirection(Hardware hw_in) {
             super(hw_in);
         }
 
@@ -131,7 +131,7 @@ public class PathingMethods {
                 "Delta Heading", hDelta);
 
             double correction = 0;
-            if (Math.abs(hDelta) > .02) {
+            if (Math.abs(hDelta) > 1) {
                if(hDelta > 0)
                    correction = 0.1;
                else if (hDelta < 0)

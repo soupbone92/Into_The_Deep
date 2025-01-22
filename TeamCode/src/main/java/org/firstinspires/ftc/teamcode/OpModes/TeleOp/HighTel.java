@@ -13,6 +13,7 @@ public class HighTel extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         hw = new Hardware(hardwareMap);
+
         FieldCentricPowerLevels fieldCentricPowerLevels = new FieldCentricPowerLevels();
 
         initializeExtenderGripPositions();
@@ -200,6 +201,7 @@ public class HighTel extends LinearOpMode {
     // following are only used to track how far moved for telemetry.
     double startEncX = 0;
     double startEncY = 0;
+
 
     ////////////
 
