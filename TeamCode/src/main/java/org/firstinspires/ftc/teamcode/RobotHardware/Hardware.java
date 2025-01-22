@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.RobotHardware;
 
+import static java.lang.Thread.sleep;
+
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -36,11 +38,20 @@ public class Hardware {
         blueExtend = hardwareMap.servo.get("blueExtend");
     }
 
-    private void InitLiftMotors(HardwareMap hardwareMap) {
+    private void InitLiftMotors(HardwareMap hardwareMap) throws InterruptedException {
         // Lift motors
         // Names need to match configuration on driver hub
         blueLift = hardwareMap.dcMotor.get("blueLift");
         blackLift = hardwareMap.dcMotor.get("blackLift");
+
+        // Set mode and reset encoder.
+        blueLift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        blackLift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        sleep(250);
+
+        // Set the run mode
+        blueLift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        blackLift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         // Reverse direction of blue lift.
         blueLift.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -48,10 +59,6 @@ public class Hardware {
         // Set brake on zero power
         blueLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         blackLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-        // Set mode and reset encoder.
-        blueLift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        blackLift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
 
     private void InitDriveMotors(HardwareMap hardwareMap) {
@@ -83,6 +90,4 @@ public class Hardware {
 
     // ImuWrapper is implemented for IMU or Pinpoint.
     public ImuPositionWrapper imuPos;
-
-
 }
