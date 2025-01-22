@@ -20,7 +20,7 @@ public class HighTel extends LinearOpMode {
         waitForStart();
 
         while (opModeIsActive() && !isStopRequested()) {
-            //controlLift();
+            controlLift();
             controlExtender();
             controlGrip();
             controlResetImu();
@@ -48,15 +48,15 @@ public class HighTel extends LinearOpMode {
         // Safe values for encoder positions
         // based on manual testing of robot.
         // If these are wrong it can break the robot.
-        boolean downSafe = bluePos < 480;
-        boolean upSafe = bluePos > -4750;
+        boolean downSafe = bluePos < 3;
+        boolean upSafe = bluePos > -3315;
 
         if (gamepad2.dpad_up && upSafe) {
-            hw.blueLift.setPower(-1);
-            hw.blackLift.setPower(-1);
+            hw.blueLift.setPower(-0.5);
+            hw.blackLift.setPower(-0.5);
         } else if (gamepad2.dpad_down && downSafe) {
-            hw.blueLift.setPower(1);
-            hw.blackLift.setPower(1);
+            hw.blueLift.setPower(0.5);
+            hw.blackLift.setPower(0.5);
         } else {
             hw.blueLift.setPower(-0.08);
             hw.blackLift.setPower(-0.08);
@@ -70,6 +70,7 @@ public class HighTel extends LinearOpMode {
         double yo = hw.imuPos.getPosY();
         double xt = startEncX - hw.imuPos.getPosX();
         double yt = startEncY - hw.imuPos.getPosY();
+        double bluePos = hw.blueLift.getCurrentPosition();
 
         // Show the position of the motor on telemetry
         TelemetryHelper.UpdateTelemetry(telemetry,
@@ -77,7 +78,10 @@ public class HighTel extends LinearOpMode {
                 "Position X", xo,
                 "Position Y", yo,
                 "X", xt,
+                "bluePos", bluePos,
                 "Y", yt);
+
+
     }
 
     private void controlResetImu() {
@@ -182,12 +186,12 @@ public class HighTel extends LinearOpMode {
     private void controlExtender() {
         // Check joystick to control extender
         // using gamepad 2.
-        if (gamepad2.dpad_left) {
-            hw.blueExtend.setPosition(0.6);
-            hw.blackExtend.setPosition(0.4);
-        } else if (gamepad2.dpad_right) {
-            hw.blueExtend.setPosition(0.4);
-            hw.blackExtend.setPosition(0.6);
+        if (gamepad2.dpad_right) {
+            hw.blueExtend.setPosition(0.05);
+            hw.blackExtend.setPosition(0.95);
+        } else if (gamepad2.dpad_left) {
+            hw.blueExtend.setPosition(0.95);
+            hw.blackExtend.setPosition(0.05);
         }
     }
 
