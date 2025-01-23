@@ -42,16 +42,25 @@ public class Hardware {
         blueLift = hardwareMap.dcMotor.get("blueLift");
         blackLift = hardwareMap.dcMotor.get("blackLift");
 
+        // Set mode and reset encoder.
+        blueLift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        blackLift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
         // Reverse direction of blue lift.
         blueLift.setDirection(DcMotorSimple.Direction.REVERSE);
 
         // Set brake on zero power
-        blueLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        blackLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        //        blueLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        //        blackLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        // Set mode and reset encoder.
-        blueLift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        blackLift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        blueLift.setTargetPosition(0);
+        blackLift.setTargetPosition(0);
+
+        blueLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        blackLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        blueLift.setTargetPosition(0);
+        blackLift.setTargetPosition(0);
     }
 
     private void InitDriveMotors(HardwareMap hardwareMap) {

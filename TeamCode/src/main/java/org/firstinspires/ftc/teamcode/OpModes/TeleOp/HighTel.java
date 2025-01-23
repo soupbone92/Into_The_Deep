@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.OpModes.TeleOp;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.RobotHardware.Hardware;
 import org.firstinspires.ftc.teamcode.TelemetryHelper;
@@ -52,16 +53,55 @@ public class HighTel extends LinearOpMode {
         boolean downSafe = bluePos < 3;
         boolean upSafe = bluePos > -3315;
 
-        if (gamepad2.dpad_up && upSafe) {
-            hw.blueLift.setPower(-0.5);
-            hw.blackLift.setPower(-0.5);
-        } else if (gamepad2.dpad_down && downSafe) {
+        if (gamepad2.dpad_up && gamepad2.left_bumper) {
+            hw.blueLift.setTargetPosition(-3315);
+            hw.blackLift.setTargetPosition(-3315);
+            hw.blueLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            hw.blackLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             hw.blueLift.setPower(0.5);
             hw.blackLift.setPower(0.5);
-        } else {
-            hw.blueLift.setPower(-0.08);
-            hw.blackLift.setPower(-0.08);
+        }  else if (gamepad2.dpad_down && gamepad2.left_bumper && hw.blueLift.getCurrentPosition() < -3000) {
+            hw.blueLift.setTargetPosition(-3000);
+            hw.blackLift.setTargetPosition(-3000);
+            hw.blueLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            hw.blackLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            hw.blueLift.setPower(0.5);
+            hw.blackLift.setPower(0.5);
+        } else if (gamepad2.dpad_down && gamepad2.left_bumper) {
+            hw.blueLift.setTargetPosition(0);
+            hw.blackLift.setTargetPosition(0);
+            hw.blueLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            hw.blackLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            hw.blueLift.setPower(0.5);
+            hw.blackLift.setPower(0.5);
+        } else if (gamepad2.dpad_down && gamepad2.left_bumper && hw.blueLift.getCurrentPosition() < -3000) {
+            hw.blueLift.setTargetPosition(-3000);
+            hw.blackLift.setTargetPosition(-3000);
+            hw.blueLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            hw.blackLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            hw.blueLift.setPower(0.5);
+            hw.blackLift.setPower(0.5);
+        } else if (gamepad2.dpad_up && !gamepad2.left_bumper && upSafe) {
+            hw.blueLift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            hw.blackLift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            hw.blueLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            hw.blackLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            hw.blueLift.setPower(-0.5);
+            hw.blackLift.setPower(-0.5);
+        } else if (gamepad2.dpad_down && !gamepad2.left_bumper && downSafe) {
+            hw.blueLift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            hw.blackLift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            hw.blueLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            hw.blackLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            hw.blueLift.setPower(0.5);
+            hw.blackLift.setPower(0.5);
+        } else if (hw.blackLift.getMode() != DcMotor.RunMode.RUN_TO_POSITION) {
+            hw.blueLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            hw.blackLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            hw.blueLift.setPower(-0.0025);
+            hw.blackLift.setPower(-0.0025);
         }
+
     }
 
     private void updateTelemetry() {
@@ -79,7 +119,10 @@ public class HighTel extends LinearOpMode {
                 "Position X", xo,
                 "Position Y", yo,
                 "X", xt,
-                "bluePos", bluePos,
+                "bluePos", hw.blueLift.getCurrentPosition(),
+                "blackPos", hw.blackLift.getCurrentPosition(),
+                "blueTrgt", hw.blueLift.getTargetPosition(),
+                "blackTrgt", hw.blackLift.getTargetPosition(),
                 "Y", yt);
 
 
@@ -165,9 +208,9 @@ public class HighTel extends LinearOpMode {
         if (gamepad1.right_bumper) {
             powerScale = 0.25;
         } else if (gamepad1.left_bumper) {
-            powerScale = 0.5;
-        } else {
             powerScale = 1.0;
+        } else {
+            powerScale = 0.5;
         }
         return powerScale;
     }
