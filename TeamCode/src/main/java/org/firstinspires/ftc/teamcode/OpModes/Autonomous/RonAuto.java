@@ -20,7 +20,7 @@ public class RonAuto extends LinearOpMode {
         PathingMethods.WhichAxis strafe = new PathingMethods.StrafeDirection(hw);
         PathingMethods.WhichAxis forward = new PathingMethods.ForwardDirection(hw);
 
-       PathingMethods.driveStraight(strafe,this,-35,power);
+       PathingMethods.driveStraight(strafe,this,-35, power);
 
     }
 
@@ -29,5 +29,5 @@ public class RonAuto extends LinearOpMode {
     }
 
     Hardware hw;
-    double power = 0.5;
+    double power = 1;
 }
