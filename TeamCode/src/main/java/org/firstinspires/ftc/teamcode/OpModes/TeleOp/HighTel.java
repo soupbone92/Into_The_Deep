@@ -4,10 +4,9 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.RobotHardware.Hardware;
 import org.firstinspires.ftc.teamcode.TelemetryHelper;
-import org.firstinspires.ftc.teamcode.Units;
-import org.firstinspires.ftc.teamcode.Units.AngularUnit;
 
 @TeleOp
 public class HighTel extends LinearOpMode {
@@ -106,7 +105,7 @@ public class HighTel extends LinearOpMode {
 
     private void updateTelemetry() {
         hw.imuPos.update();
-        double botHeading = hw.imuPos.getHeading(AngularUnit.Degree);
+        double botHeading = hw.imuPos.getHeading(AngleUnit.DEGREES);
         double xo = hw.imuPos.getPosX();
         double yo = hw.imuPos.getPosY();
         double xt = startEncX - hw.imuPos.getPosX();
@@ -141,7 +140,7 @@ public class HighTel extends LinearOpMode {
         // Takes joystick input and sets motor power levels to drive
         // robot field centric.
         hw.imuPos.update();
-        double botHeading = hw.imuPos.getHeading(AngularUnit.Radian);
+        double botHeading = hw.imuPos.getHeading(AngleUnit.RADIANS);
 
         getFieldCentricPowerLevels(
                 leftStickY, leftStickX,

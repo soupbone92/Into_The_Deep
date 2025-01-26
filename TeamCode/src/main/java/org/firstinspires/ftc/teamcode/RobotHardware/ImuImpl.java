@@ -5,8 +5,11 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
-import org.firstinspires.ftc.teamcode.Units;
+
+import kotlin.NotImplementedError;
 
 
 // Implement an ImuWrapper for internal IMU and encoders.
@@ -37,9 +40,9 @@ public class ImuImpl implements ImuPositionWrapper {
     }
 
     @Override
-    public double getHeading(Units.AngularUnit units) {
+    public double getHeading(AngleUnit units) {
         YawPitchRollAngles angels =  imu.getRobotYawPitchRollAngles();
-        if(units == Units.AngularUnit.Degree)
+        if(units == AngleUnit.DEGREES)
             return Math.toDegrees(angels.getYaw());
         else
             return angels.getYaw();
@@ -59,6 +62,12 @@ public class ImuImpl implements ImuPositionWrapper {
     public void update() {
         // not needed for IMU and encoders.
     }
+
+    @Override
+    public Pose2D getPose() {
+        throw new NotImplementedError();
+    }
+
     private final IMU imu;
     private final DcMotor yEncoder;
     private final DcMotor xEncoder;

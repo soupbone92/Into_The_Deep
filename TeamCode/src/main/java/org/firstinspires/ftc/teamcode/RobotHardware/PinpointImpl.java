@@ -2,8 +2,9 @@ package org.firstinspires.ftc.teamcode.RobotHardware;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.teamcode.Constants;
-import org.firstinspires.ftc.teamcode.Units;
 
 // ImuPostionWrapper implementation for GoBilda Pinpoint computer.
 public class PinpointImpl implements ImuPositionWrapper {
@@ -29,8 +30,8 @@ public class PinpointImpl implements ImuPositionWrapper {
     }
 
     @Override
-    public double getHeading(Units.AngularUnit units) {
-        if(units == Units.AngularUnit.Degree)
+    public double getHeading(AngleUnit units) {
+        if(units == AngleUnit.DEGREES)
             return Math.toDegrees(pp.getHeading());
         else
             return pp.getHeading();
@@ -49,6 +50,11 @@ public class PinpointImpl implements ImuPositionWrapper {
     @Override
     public void update() {
         pp.update();
+    }
+
+    @Override
+    public Pose2D getPose() {
+        return pp.getPosition();
     }
 
 }

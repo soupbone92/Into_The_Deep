@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.OpModes.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-import org.firstinspires.ftc.teamcode.PathingMethods;
+import org.firstinspires.ftc.teamcode.PathController;
 import org.firstinspires.ftc.teamcode.RobotHardware.Hardware;
 
 @Autonomous
@@ -17,11 +17,8 @@ public class RonAuto extends LinearOpMode {
 
         // wait for start to be pushed.
         waitForStart();
-        PathingMethods.WhichAxis strafe = new PathingMethods.StrafeDirection(hw);
-        PathingMethods.WhichAxis forward = new PathingMethods.ForwardDirection(hw);
 
-       PathingMethods.driveStraight(strafe,this,-35, power);
-
+        PathController pathing = new PathController(hw, this, 0.5);
     }
 
     private void pause() {
