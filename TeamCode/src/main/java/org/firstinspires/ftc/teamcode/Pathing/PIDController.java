@@ -6,7 +6,6 @@ public class PIDController {
     private double integralSum;
     private double lastError;
     private double lastTime;
-    private double lastOutput = 0;
 
     public PIDController(double kP, double kI, double kD) {
         this.kP = kP;
@@ -40,16 +39,20 @@ public class PIDController {
         double output;
         if(deltaTime == 0) {
             // Avoid divide by zero it deltaTime is zero.
-            output = kP * error + kI * integralSum;
+            double P = kP * error;
+            double I = kI * integralSum;
+            output = P + I;
         }
         else {
             double derivative = (error - lastError) / (deltaTime * milliToSec);
-            output = kP * error + kI * integralSum + kD * derivative;
+            double P = kP * error;
+            double I = kI * integralSum;
+            double D = kD * derivative;
+            output = P + I + D;
         }
 
         lastError = error;
         lastTime = currentTime;
-        lastOutput = output;
 
         return output;
     }
@@ -58,5 +61,11 @@ public class PIDController {
         integralSum = 0;
         lastError = 0;
         lastTime = System.currentTimeMillis();
+    }
+
+    public void setCoeff(double kp, double ki, double kd) {
+        kP = kp;
+        kI = ki;
+        kD = kd;
     }
 }

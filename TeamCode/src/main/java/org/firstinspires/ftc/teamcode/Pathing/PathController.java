@@ -170,6 +170,10 @@ public class PathController {
             updateTelemetry();
         }
     }
+
+    public void setRotPidCoeff(double kp, double ki, double kd) {
+        this.headingPid.setCoeff(kp,ki,kd);
+    }
 }
 
 
