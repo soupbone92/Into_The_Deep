@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.Pathing;
 
 // Used to limit rate of change in power to motors.
 public class PowerRampControler {

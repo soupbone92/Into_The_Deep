@@ -1,5 +1,5 @@
 import static org.junit.Assert.assertEquals;
-import org.firstinspires.ftc.teamcode.PIDController;
+import org.firstinspires.ftc.teamcode.Pathing.PIDController;
 import org.junit.Test;
 
 public class TestTeamCode {

@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.Pathing;
 import androidx.annotation.NonNull;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -6,7 +6,10 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
+import org.firstinspires.ftc.teamcode.Math.Matrix2;
+import org.firstinspires.ftc.teamcode.Math.Vector2;
 import org.firstinspires.ftc.teamcode.RobotHardware.Hardware;
+import org.firstinspires.ftc.teamcode.TelemetryHelper;
 
 public class PathController {
 
@@ -39,11 +42,20 @@ public class PathController {
         this.targetLocation.y = y;
     }
 
-    public boolean atTarget()
+    public boolean compareHeading(double rh, double lh)
     {
+        // compare heading to 1/4 degree.
+        return Math.abs(lh - rh) < .25;
+    }
+
+    public boolean notAtTarget()
+    {
+        // Test is not at target heading and loc.
         double closeEnoughInches = 0.25;
         Pose2D currentPose = hardWare.imuPos.getPose();
-        return Vector2.deltaMag(currentPose, targetLocation) < closeEnoughInches;
+        boolean atLoc = Vector2.deltaMag(currentPose, targetLocation) < closeEnoughInches;
+        boolean atHeading = compareHeading(currentPose.getHeading(AngleUnit.DEGREES), targetHeadingDeg);
+        return !(atLoc && atHeading);
     }
 
     public void stop()
@@ -150,6 +162,14 @@ public class PathController {
     PowerRampControler powerRampControlFr = new PowerRampControler(.1);
     PowerRampControler powerRampControlBl = new PowerRampControler(.1);
     PowerRampControler powerRampControlBr = new PowerRampControler(.1);
+
+    public void run() {
+        // Runs until stop or at target.
+        while(notAtTarget() && !opMode.isStopRequested()) {
+            drive();
+            updateTelemetry();
+        }
+    }
 }
 
 
