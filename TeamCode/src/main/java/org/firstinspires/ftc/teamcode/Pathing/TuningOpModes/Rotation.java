@@ -40,7 +40,8 @@ public class Rotation extends LinearOpMode {
                     "kd - cross", kd);
 
             if (gamepad1.left_bumper) {
-                pc.setTargetHeadingDeg(-targetDeg);
+                targetDeg -= -1;
+                pc.setTargetHeadingDeg(targetDeg);
             }
         }
     }
