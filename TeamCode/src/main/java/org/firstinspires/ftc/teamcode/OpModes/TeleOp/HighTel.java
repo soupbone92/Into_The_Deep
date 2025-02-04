@@ -22,11 +22,11 @@ public class HighTel extends LinearOpMode {
         waitForStart();
 
         while (opModeIsActive() && !isStopRequested()) {
+            double powerScale = controlScalePower();
             controlLift();
             controlExtender();
             controlGrip();
             controlResetImu();
-            double powerScale = controlScalePower();
             driveFieldCentric(
                     -gamepad1.left_stick_y, gamepad1.left_stick_x,
                     gamepad1.right_stick_x,
@@ -46,60 +46,61 @@ public class HighTel extends LinearOpMode {
     private void controlLift() {
         // Read joystick input to control lift
         int bluePos = hw.blueLift.getCurrentPosition();
-
+        double liftPowerScale = controlLiftScalePower();
         // Safe values for encoder positions
         // based on manual testing of robot.
         // If these are wrong it can break the robot.
         boolean downSafe = bluePos < 3;
-        boolean upSafe = bluePos > -3315;
+        boolean upSafe = bluePos > -4500;
+        double liftPower = 1.0;
 
         if (gamepad2.dpad_up && gamepad2.left_bumper) {
             hw.blueLift.setTargetPosition(-3315);
             hw.blackLift.setTargetPosition(-3315);
             hw.blueLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             hw.blackLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            hw.blueLift.setPower(0.5);
-            hw.blackLift.setPower(0.5);
+            hw.blueLift.setPower(liftPowerScale);
+            hw.blackLift.setPower(liftPowerScale);
         }  else if (gamepad2.dpad_down && gamepad2.left_bumper && hw.blueLift.getCurrentPosition() < -3000) {
             hw.blueLift.setTargetPosition(-3000);
             hw.blackLift.setTargetPosition(-3000);
             hw.blueLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             hw.blackLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            hw.blueLift.setPower(0.5);
-            hw.blackLift.setPower(0.5);
+            hw.blueLift.setPower(liftPowerScale/2);
+            hw.blackLift.setPower(liftPowerScale/2);
         } else if (gamepad2.dpad_down && gamepad2.left_bumper) {
             hw.blueLift.setTargetPosition(0);
             hw.blackLift.setTargetPosition(0);
             hw.blueLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             hw.blackLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            hw.blueLift.setPower(0.5);
-            hw.blackLift.setPower(0.5);
+            hw.blueLift.setPower(liftPowerScale/2);
+            hw.blackLift.setPower(liftPowerScale/2);
         } else if (gamepad2.dpad_down && gamepad2.left_bumper && hw.blueLift.getCurrentPosition() < -3000) {
             hw.blueLift.setTargetPosition(-3000);
             hw.blackLift.setTargetPosition(-3000);
             hw.blueLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             hw.blackLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            hw.blueLift.setPower(0.5);
-            hw.blackLift.setPower(0.5);
+            hw.blueLift.setPower(liftPowerScale/2);
+            hw.blackLift.setPower(liftPowerScale/2);
         } else if (gamepad2.dpad_up && !gamepad2.left_bumper && upSafe) {
             hw.blueLift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             hw.blackLift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             hw.blueLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             hw.blackLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            hw.blueLift.setPower(-0.5);
-            hw.blackLift.setPower(-0.5);
+            hw.blueLift.setPower(-liftPowerScale);
+            hw.blackLift.setPower(-liftPowerScale);
         } else if (gamepad2.dpad_down && !gamepad2.left_bumper && downSafe) {
             hw.blueLift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             hw.blackLift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             hw.blueLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             hw.blackLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            hw.blueLift.setPower(0.5);
-            hw.blackLift.setPower(0.5);
+            hw.blueLift.setPower(liftPowerScale/2);
+            hw.blackLift.setPower(liftPowerScale/2);
         } else if (hw.blackLift.getMode() != DcMotor.RunMode.RUN_TO_POSITION) {
             hw.blueLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             hw.blackLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            hw.blueLift.setPower(-0.0025);
-            hw.blackLift.setPower(-0.0025);
+            hw.blueLift.setPower(-0.08);
+            hw.blackLift.setPower(-0.08);
         }
 
     }
@@ -208,9 +209,22 @@ public class HighTel extends LinearOpMode {
         if (gamepad1.right_bumper) {
             powerScale = 0.25;
         } else if (gamepad1.left_bumper) {
-            powerScale = 1.0;
-        } else {
             powerScale = 0.5;
+        } else {
+            powerScale = 1.0;
+        }
+        return powerScale;
+    }
+    private double controlLiftScalePower() {
+        // Check joystick
+        // scale power if bumpers are pressed.
+        double powerScale;
+        if (gamepad2.y) {
+            powerScale = 0.25;
+        } else if (gamepad2.x) {
+            powerScale = 0.5;
+        } else {
+            powerScale = 1.0;
         }
         return powerScale;
     }
@@ -218,10 +232,10 @@ public class HighTel extends LinearOpMode {
     private void controlGrip() {
         // Check joystick to control grip.
         // using gamepad 2.
-        if (gamepad2.b) {
+        if (gamepad2.a) {
             hw.blueGrip.setPosition(1);
             hw.blackGrip.setPosition(0);
-        } else if (gamepad2.a) {
+        } else if (gamepad2.b) {
             hw.blueGrip.setPosition(0);
             hw.blackGrip.setPosition(1);
         }

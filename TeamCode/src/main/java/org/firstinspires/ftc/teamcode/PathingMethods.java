@@ -50,10 +50,10 @@ public class PathingMethods {
                 double power,
                 double correction)
         {
-            hw.frontLeft.setPower((power + correction));
-            hw.frontRight.setPower(power - correction);
-            hw.backLeft.setPower(power + correction);
-            hw.backRight.setPower((power - correction));
+            hw.frontLeft.setPower(power);
+            hw.frontRight.setPower(power);
+            hw.backLeft.setPower(power);
+            hw.backRight.setPower(power);
         }
 
     }
