@@ -50,8 +50,8 @@ public class Hardware {
         blueLift.setDirection(DcMotorSimple.Direction.REVERSE);
 
         // Set brake on zero power
-        //        blueLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        //        blackLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        blueLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        blackLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         blueLift.setTargetPosition(0);
         blackLift.setTargetPosition(0);
