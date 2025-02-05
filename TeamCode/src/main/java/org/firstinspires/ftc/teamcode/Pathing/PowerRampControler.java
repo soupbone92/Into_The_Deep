@@ -32,6 +32,6 @@ public class PowerRampControler {
         }
 
         lastValue = lastValue + delta;
-        return lastValue;
+        return newValue;
     }
 }

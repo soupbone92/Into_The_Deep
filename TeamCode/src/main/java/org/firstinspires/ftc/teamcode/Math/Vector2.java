@@ -47,6 +47,8 @@ public class Vector2 {
     {
         // normalize to unit vector.
         double mag = magnitude();
+        if(mag == 0)
+            return;
         this.x /= mag;
         this.y /= mag;
     }

@@ -16,14 +16,18 @@ public class Rotation extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
 
         Hardware hw = new Hardware(hardwareMap);
+        hw.imuPos.reset();
         kp = 0.02; // Initial guess.  If 10 degrees away set power to .2?
         ki = 0.0;
         kd = 0.0;
+
+        waitForStart();
 
         double targetDeg = 90.0;
         PathController pc = new PathController(hw, this, 0.5);
         pc.setTargetHeadingDeg(targetDeg);
         while (!this.isStopRequested()) {
+            hw.imuPos.update();
             pc.drive();
             adjustValues();
             pc.setRotPidCoeff(kp, ki, kd);
@@ -32,12 +36,13 @@ public class Rotation extends LinearOpMode {
             // 1. Start with kp.
             // 2. adjust ki for steady state error.
             // 3. adjust kd to reduce overshoot.
-            TelemetryHelper.UpdateTelemetry(telemetry,
-                    "target", targetDeg,
-                    "heading", heading,
-                    "kp - circle", kp,
-                    "ki - square ", ki,
-                    "kd - cross", kd);
+            pc.updateTelemetry();
+//            TelemetryHelper.UpdateTelemetry(telemetry,
+//                    "target", targetDeg,
+//                    "heading", heading,
+//                    "kp - circle", kp,
+//                    "ki - square ", ki,
+//                    "kd - cross", kd);
 
             if (gamepad1.left_bumper) {
                 targetDeg -= -1;

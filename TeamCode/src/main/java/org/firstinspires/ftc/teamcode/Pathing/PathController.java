@@ -78,7 +78,6 @@ public class PathController {
         // Compute normalize vector pointing to target location.
         motionVector.subtractInPlace(lastPose, targetLocation);
         motionVector.normalize();
-        deltaTargetPid.setTargetPoint(.25); // Get to delta of .25 inches.
         double deltaTargetPidValue = deltaTargetPid.calculate(Vector2.deltaMag(lastPose, targetLocation));
         motionVector.scale(nominalPower*deltaTargetPidValue);
 
@@ -95,8 +94,8 @@ public class PathController {
         rotationScalar = clampRange(rotationScalar, -0.3, 0.3);
 
         // Normalize output power [-1.0-1.0]
-        double vectorSum = Math.abs(robotRelativePowerVector.y) + Math.abs(robotRelativePowerVector.x) + Math.abs(rotationScalar);
-        double normalize = 1.0 / Math.max(vectorSum, 1.0);
+        vectorSum = Math.abs(robotRelativePowerVector.y) + Math.abs(robotRelativePowerVector.x) + Math.abs(rotationScalar);
+        normalize = 1.0 / Math.max(vectorSum, 1.0);
 
         // Set normalized field centric power levels.
         frontLeftPower = (robotRelativePowerVector.y + robotRelativePowerVector.x + rotationScalar) * normalize;
@@ -107,6 +106,9 @@ public class PathController {
         // set power to the real motors.
         setMotorPower();
     }
+
+    double vectorSum;
+    double normalize;
 
     private void setMotorPower()
     {
@@ -132,7 +134,11 @@ public class PathController {
                 "currentLoc x:", lastPose.getX(DistanceUnit.INCH),
                 "currentLoc y:", lastPose.getY(DistanceUnit.INCH),
                 "currentHeading:", lastPose.getHeading(AngleUnit.DEGREES),
+                "getheading:", hardWare.imuPos.getHeading(AngleUnit.DEGREES),
                 "delta Target:", Vector2.deltaMag(lastPose, targetLocation),
+                "rotscaler:", rotationScalar,
+                "vecsum:", vectorSum,
+                "normalize:", normalize,
                 "fl power", hardWare.frontLeft.getPower(),
                 "fr power", hardWare.frontRight.getPower(),
                 "bl power", hardWare.backLeft.getPower(),
@@ -143,12 +149,12 @@ public class PathController {
     private final Hardware hardWare;
 
     double targetHeadingDeg;
-    Vector2 targetLocation;
+    Vector2 targetLocation = new Vector2(0,0);
     double rotationScalar;
-    Vector2 motionVector;
+    Vector2 motionVector = new Vector2(0,0);
     double nominalPower;
 
-    Pose2D lastPose;
+    Pose2D lastPose = new Pose2D(DistanceUnit.INCH, 0, 0, AngleUnit.DEGREES, 0);
 
     double frontLeftPower;
     double frontRightPower;
@@ -156,7 +162,7 @@ public class PathController {
     double backRightPower;
     Matrix2 robotToFieldRotation = new Matrix2();
     Vector2 robotRelativePowerVector = new Vector2(0,0);
-    PIDController headingPid = new PIDController(0.1,0,0);
+    PIDController headingPid = new PIDController(0.3,0,0);
     PIDController deltaTargetPid = new PIDController(.5,0, 0);
     PowerRampControler powerRampControlFl = new PowerRampControler(.1);
     PowerRampControler powerRampControlFr = new PowerRampControler(.1);
