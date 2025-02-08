@@ -14,7 +14,9 @@ public class Vector2 {
         this.y = y;
     }
 
-    public double magnitude() {
+    public double norm() {
+        // Euclidean norm of vector represents
+        // length/magnitude of vector.
         return Math.sqrt(x * x + y * y);
     }
 
@@ -37,7 +39,12 @@ public class Vector2 {
         this.y = currentPose.getY(DistanceUnit.INCH) -  targetLocation.y;
     }
 
-    public static double deltaMag(@NonNull Pose2D currentPose, @NonNull Vector2 targetLocation) {
+    public void subtractInPlace(@NonNull Vector2 targetLocation, @NonNull Pose2D currentPose) {
+        this.x = targetLocation.x - currentPose.getX(DistanceUnit.INCH);
+        this.y = targetLocation.y - currentPose.getY(DistanceUnit.INCH);
+    }
+
+    public static double deltaNorm(@NonNull Pose2D currentPose, @NonNull Vector2 targetLocation) {
         double dx = targetLocation.x - currentPose.getX(DistanceUnit.INCH);
         double dy = targetLocation.y - currentPose.getY(DistanceUnit.INCH);
         return Math.sqrt(dx * dx + dy * dy);
@@ -46,11 +53,16 @@ public class Vector2 {
     public void normalize()
     {
         // normalize to unit vector.
-        double mag = magnitude();
+        // A normalized vector has a norm/length of 1.
+        double mag = norm();
         if(mag == 0)
             return;
-        this.x /= mag;
-        this.y /= mag;
+        x /= mag;
+        y /= mag;
     }
 
+    public void setZero() {
+        x = 0;
+        y = 0;
+    }
 }

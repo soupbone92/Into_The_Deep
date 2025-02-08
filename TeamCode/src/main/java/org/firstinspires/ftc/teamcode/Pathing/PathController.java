@@ -53,7 +53,7 @@ public class PathController {
         // Test is not at target heading and loc.
         double closeEnoughInches = 0.25;
         Pose2D currentPose = hardWare.imuPos.getPose();
-        boolean atLoc = Vector2.deltaMag(currentPose, targetLocation) < closeEnoughInches;
+        boolean atLoc = Vector2.deltaNorm(currentPose, targetLocation) < closeEnoughInches;
         boolean atHeading = compareHeading(currentPose.getHeading(AngleUnit.DEGREES), targetHeadingDeg);
         return !(atLoc && atHeading);
     }
@@ -73,12 +73,14 @@ public class PathController {
         // and adjusts motor power to drive towards target x,y and targetHeadingDeg.
 
         // This gets the current x,y and normalized [180,-180) heading
+        hardWare.imuPos.update();
         lastPose = hardWare.imuPos.getPose();
 
         // Compute normalize vector pointing to target location.
-        motionVector.subtractInPlace(lastPose, targetLocation);
+        motionVector.subtractInPlace(targetLocation,lastPose);
         motionVector.normalize();
-        double deltaTargetPidValue = deltaTargetPid.calculate(Vector2.deltaMag(lastPose, targetLocation));
+        double deltaTargetPidValue = deltaTargetPid.calculate(Vector2.deltaNorm(lastPose, targetLocation));
+        deltaTargetPidValue = clampRange(deltaTargetPidValue, -0.9, 0.9);
         motionVector.scale(nominalPower*deltaTargetPidValue);
 
         // Rotate the vector based on robot heading to
@@ -97,14 +99,25 @@ public class PathController {
         vectorSum = Math.abs(robotRelativePowerVector.y) + Math.abs(robotRelativePowerVector.x) + Math.abs(rotationScalar);
         normalize = 1.0 / Math.max(vectorSum, 1.0);
 
+        // TESTING set motion vector to zero to only test rotation
+        // Comment out to test motion/direction
+        robotRelativePowerVector.setZero();
+        // End testing
+
         // Set normalized field centric power levels.
-        frontLeftPower = (robotRelativePowerVector.y + robotRelativePowerVector.x + rotationScalar) * normalize;
-        backLeftPower = (robotRelativePowerVector.y - robotRelativePowerVector.x + rotationScalar) * normalize;
-        frontRightPower = (robotRelativePowerVector.y - robotRelativePowerVector.x - rotationScalar) * normalize;
-        backRightPower = (robotRelativePowerVector.y + robotRelativePowerVector.x - rotationScalar) * normalize;
+        // Clamp to valid range [-1,1] for motors.
+        frontLeftPower = motorClamp((robotRelativePowerVector.y + robotRelativePowerVector.x + rotationScalar) * normalize);
+        backLeftPower = motorClamp((robotRelativePowerVector.y - robotRelativePowerVector.x + rotationScalar) * normalize);
+        frontRightPower = motorClamp((robotRelativePowerVector.y - robotRelativePowerVector.x - rotationScalar) * normalize);
+        backRightPower = motorClamp((robotRelativePowerVector.y + robotRelativePowerVector.x - rotationScalar) * normalize);
 
         // set power to the real motors.
         setMotorPower();
+    }
+
+    private double motorClamp(double v) {
+        // Clamp value to range valid for motors.
+        return clampRange(v, -1.0, 1.0);
     }
 
     double vectorSum;
@@ -135,7 +148,7 @@ public class PathController {
                 "currentLoc y:", lastPose.getY(DistanceUnit.INCH),
                 "currentHeading:", lastPose.getHeading(AngleUnit.DEGREES),
                 "getheading:", hardWare.imuPos.getHeading(AngleUnit.DEGREES),
-                "delta Target:", Vector2.deltaMag(lastPose, targetLocation),
+                "delta Target:", Vector2.deltaNorm(lastPose, targetLocation),
                 "rotscaler:", rotationScalar,
                 "vecsum:", vectorSum,
                 "normalize:", normalize,
@@ -164,10 +177,10 @@ public class PathController {
     Vector2 robotRelativePowerVector = new Vector2(0,0);
     PIDController headingPid = new PIDController(0.3,0,0);
     PIDController deltaTargetPid = new PIDController(.5,0, 0);
-    PowerRampControler powerRampControlFl = new PowerRampControler(.1);
-    PowerRampControler powerRampControlFr = new PowerRampControler(.1);
-    PowerRampControler powerRampControlBl = new PowerRampControler(.1);
-    PowerRampControler powerRampControlBr = new PowerRampControler(.1);
+    PowerRampController powerRampControlFl = new PowerRampController(.1);
+    PowerRampController powerRampControlFr = new PowerRampController(.1);
+    PowerRampController powerRampControlBl = new PowerRampController(.1);
+    PowerRampController powerRampControlBr = new PowerRampController(.1);
 
     public void run() {
         // Runs until stop or at target.

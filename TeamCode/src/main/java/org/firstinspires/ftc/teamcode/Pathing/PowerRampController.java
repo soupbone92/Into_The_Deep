@@ -1,13 +1,13 @@
 package org.firstinspires.ftc.teamcode.Pathing;
 
 // Used to limit rate of change in power to motors.
-public class PowerRampControler {
+public class PowerRampController {
     public double maxChange;
     public double lastValue;
     public double lastTimeSetMs;
     public double minTimeSec = 20;
 
-    PowerRampControler(double maxChange)
+    PowerRampController(double maxChange)
     {
         this.maxChange = maxChange;
     }
@@ -32,6 +32,6 @@ public class PowerRampControler {
         }
 
         lastValue = lastValue + delta;
-        return newValue;
+        return lastValue;
     }
 }
