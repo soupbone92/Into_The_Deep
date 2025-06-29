@@ -21,19 +21,20 @@ public class ExampleNewPathing extends LinearOpMode {
         PathController pathing = new PathController(hw, this, 0.3);
 
         pause();
+        // Move forward 24 inches.
         pathing.setTargetHeadingDeg(0);
-        pathing.setTargetLocation(24,24);
+        pathing.setTargetLocation(24,0);
         pathing.run();
 
-        pause();
-        pathing.setTargetHeadingDeg(45);
-        pathing.setTargetLocation(24,24);
-        pathing.run();
-
-        pause();
-        pathing.setTargetHeadingDeg(-90);
-        pathing.setTargetLocation(36,24);
-        pathing.run();
+//        pause();
+//        pathing.setTargetHeadingDeg(45);
+//        pathing.setTargetLocation(24,24);
+//        pathing.run();
+//
+//        pause();
+//        pathing.setTargetHeadingDeg(-90);
+//        pathing.setTargetLocation(36,24);
+//        pathing.run();
     }
 
     private void pause() {
