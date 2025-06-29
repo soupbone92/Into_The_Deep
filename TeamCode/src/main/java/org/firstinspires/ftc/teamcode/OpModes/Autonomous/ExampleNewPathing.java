@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.Pathing.PathController;
 import org.firstinspires.ftc.teamcode.RobotHardware.Hardware;
+import org.firstinspires.ftc.teamcode.TelemetryHelper;
 
 @TeleOp
 public class ExampleNewPathing extends LinearOpMode {
@@ -17,7 +18,12 @@ public class ExampleNewPathing extends LinearOpMode {
         // wait for start to be pushed.
         waitForStart();
 
-        PathController pathing = new PathController(hw, this, 0.5);
+        PathController pathing = new PathController(hw, this, 0.3);
+
+        pause();
+        pathing.setTargetHeadingDeg(0);
+        pathing.setTargetLocation(24,24);
+        pathing.run();
 
         pause();
         pathing.setTargetHeadingDeg(45);
@@ -31,6 +37,7 @@ public class ExampleNewPathing extends LinearOpMode {
     }
 
     private void pause() {
+        TelemetryHelper.UpdateTelemetry(this.telemetry, "Push B to continue...");
         while(!gamepad1.b)
             sleep(250);
     }

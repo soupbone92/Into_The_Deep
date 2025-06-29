@@ -38,6 +38,16 @@ public class PathController {
 
     public void setTargetLocation(int x, int y) {
         // Drive to relative x,y (inches) position and maintain/rotate to targetHeadingDeg.
+        // Coordinate system of play field based on initial position of robot.
+        // R = robot, ^ = initial facing position of robot.
+        //         +X
+        //          ^  ^
+        //          |  R
+        //+Y <------|------>-Y
+        //          |
+        //          \/
+        //         -X
+
         this.targetLocation.x = x;
         this.targetLocation.y = y;
     }
