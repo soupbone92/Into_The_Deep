@@ -7,7 +7,7 @@ import org.firstinspires.ftc.teamcode.Pathing.PathController;
 import org.firstinspires.ftc.teamcode.RobotHardware.Hardware;
 
 @TeleOp
-public class ExampleNewStuff extends LinearOpMode {
+public class ExampleNewPathing extends LinearOpMode {
 
     // This runs as soon as init it pushed.
     @Override
