@@ -45,6 +45,7 @@ public class Vector2 {
     }
 
     public static double deltaNorm(@NonNull Pose2D currentPose, @NonNull Vector2 targetLocation) {
+        // Scaler distance between currentPose and targetLocation.
         double dx = targetLocation.x - currentPose.getX(DistanceUnit.INCH);
         double dy = targetLocation.y - currentPose.getY(DistanceUnit.INCH);
         return Math.sqrt(dx * dx + dy * dy);

@@ -1,4 +1,6 @@
 package org.firstinspires.ftc.teamcode.Pathing;
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -10,6 +12,7 @@ import org.firstinspires.ftc.teamcode.Math.Matrix2;
 import org.firstinspires.ftc.teamcode.Math.Vector2;
 import org.firstinspires.ftc.teamcode.RobotHardware.Hardware;
 import org.firstinspires.ftc.teamcode.TelemetryHelper;
+import org.firstinspires.ftc.teamcode.utils.SystemTimeSource;
 
 public class PathController {
 
@@ -89,7 +92,10 @@ public class PathController {
         // Compute normalize vector pointing to target location.
         motionVector.subtractInPlace(targetLocation,lastPose);
         motionVector.normalize();
+
+        // Based on how far the
         double deltaTargetPidValue = deltaTargetPid.calculate(Vector2.deltaNorm(lastPose, targetLocation));
+        Log.d("drive", String.format("deltaTargetPidValue: %f", deltaTargetPidValue));
         deltaTargetPidValue = clampRange(deltaTargetPidValue, -0.9, 0.9);
         motionVector.scale(nominalPower*deltaTargetPidValue);
 
@@ -185,8 +191,8 @@ public class PathController {
     double backRightPower;
     Matrix2 robotToFieldRotation = new Matrix2();
     Vector2 robotRelativePowerVector = new Vector2(0,0);
-    PIDController headingPid = new PIDController(0.3,0,0);
-    PIDController deltaTargetPid = new PIDController(.5,0, 0);
+    PIDController headingPid = new PIDController(0.3,0,0, new SystemTimeSource());
+    PIDController deltaTargetPid = new PIDController(.5,0, 0, new SystemTimeSource());
     PowerRampController powerRampControlFl = new PowerRampController(.1);
     PowerRampController powerRampControlFr = new PowerRampController(.1);
     PowerRampController powerRampControlBl = new PowerRampController(.1);

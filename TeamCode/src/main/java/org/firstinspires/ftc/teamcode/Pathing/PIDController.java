@@ -1,19 +1,26 @@
 package org.firstinspires.ftc.teamcode.Pathing;
 
+import android.util.Log;
+
+import org.firstinspires.ftc.teamcode.utils.TimeSource;
+
 public class PIDController {
     private double kP, kI, kD;
     private double target;
     private double integralSum;
     private double lastError;
-    private double lastTime;
+    private long lastTime;
+    private TimeSource timeSource;
 
-    public PIDController(double kP, double kI, double kD) {
+    public PIDController(double kP, double kI, double kD, TimeSource ts) {
         this.kP = kP;
         this.kI = kI;
         this.kD = kD;
         this.integralSum = 0;
         this.lastError = 0;
-        this.lastTime = System.currentTimeMillis();
+        timeSource = ts;
+        this.lastTime = timeSource.currentTimeMillis();
+
     }
 
     public void updateCoefficients(double kP, double kI, double kD)
@@ -29,12 +36,14 @@ public class PIDController {
 
     public double calculate(double currentPoint)
     {
+
         double milliToSec = 1.0/1000.0;
-        double currentTime = System.currentTimeMillis();
-        double deltaTime = (currentTime - lastTime);
+        long currentTime = timeSource.currentTimeMillis();
+        long deltaTime = (currentTime - lastTime);
 
         double error = target - currentPoint;
         integralSum += error * deltaTime;
+
 
         double output;
         if(deltaTime == 0) {
@@ -53,6 +62,10 @@ public class PIDController {
 
         lastError = error;
         lastTime = currentTime;
+
+        Log.d("Calculate", String.format("Target: %f", this.target));
+        Log.d("Calculate", String.format("CurrentPoint: %f", currentPoint));
+        Log.d("Calculate", String.format("Output: %f", output));
 
         return output;
     }
