@@ -1,12 +1,16 @@
 package org.firstinspires.ftc.teamcode.RobotHardware;
 
-import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
+import org.firstinspires.ftc.teamcode.TeamInterfaces.HardWareI;
+
 // Initializes and tracks the Robot Hardware.
-public class Hardware {
+public class Hardware implements HardWareI {
 
     public Hardware(HardwareMap hardwareMap) throws InterruptedException {
         InitDriveMotors(hardwareMap);
@@ -49,10 +53,6 @@ public class Hardware {
         // Reverse direction of blue lift.
         blueLift.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        // Set brake on zero power
-        //        blueLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        //        blackLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
         blueLift.setTargetPosition(0);
         blackLift.setTargetPosition(0);
 
@@ -94,4 +94,60 @@ public class Hardware {
     public ImuPositionWrapper imuPos;
 
 
+    @Override
+    public void updateImuPos() {
+        imuPos.update();
+    }
+
+    @Override
+    public Pose2D getImuPose() {
+        return imuPos.getPose();
+    }
+
+    @Override
+    public double getImuHeading(AngleUnit unit) {
+        return imuPos.getHeading(unit);
+    }
+
+    @Override
+    public void setFrontLeftPower(double power) {
+        frontLeft.setPower(power);
+    }
+
+    @Override
+    public void setFrontRightPower(double power) {
+        frontRight.setPower(power);
+
+    }
+
+    @Override
+    public void setBackLeftPower(double power) {
+        backLeft.setPower(power);
+
+    }
+
+    @Override
+    public void setBackRightPower(double power) {
+        backRight.setPower(power);
+    }
+
+    @Override
+    public double getFrontLeftPower() {
+        return frontLeft.getPower();
+    }
+
+    @Override
+    public double getFrontRightPower() {
+        return frontRight.getPower();
+    }
+
+    @Override
+    public double getBackLeftPower() {
+        return backLeft.getPower();
+    }
+
+    @Override
+    public double getBackRightPower() {
+        return backRight.getPower();
+    }
 }

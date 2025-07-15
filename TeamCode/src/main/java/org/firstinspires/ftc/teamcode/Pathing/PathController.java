@@ -10,13 +10,12 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.teamcode.Math.Matrix2;
 import org.firstinspires.ftc.teamcode.Math.Vector2;
-import org.firstinspires.ftc.teamcode.RobotHardware.Hardware;
 import org.firstinspires.ftc.teamcode.TelemetryHelper;
 import org.firstinspires.ftc.teamcode.utils.SystemTimeSource;
 
 public class PathController {
 
-    public PathController(Hardware hw, LinearOpMode opMode, double nominalPower) {
+    public PathController(org.firstinspires.ftc.teamcode.TeamInterfaces.HardWareI hw, LinearOpMode opMode, double nominalPower) {
         this.hardWare = hw;
         this.opMode = opMode;
         this.nominalPower = nominalPower;
@@ -29,7 +28,7 @@ public class PathController {
 
     @NonNull
     private Vector2 computeMovementVector(Vector2 targetLocation) {
-        lastPose = hardWare.imuPos.getPose();
+        lastPose = hardWare.getImuPose();
         return new Vector2(0, 0);
     }
 
@@ -65,7 +64,7 @@ public class PathController {
     {
         // Test is not at target heading and loc.
         double closeEnoughInches = 0.25;
-        Pose2D currentPose = hardWare.imuPos.getPose();
+        Pose2D currentPose = hardWare.getImuPose();
         boolean atLoc = Vector2.deltaNorm(currentPose, targetLocation) < closeEnoughInches;
         boolean atHeading = compareHeading(currentPose.getHeading(AngleUnit.DEGREES), targetHeadingDeg);
         return !(atLoc && atHeading);
@@ -75,10 +74,10 @@ public class PathController {
     {
         // Turn off motors.
         // Call drive again to resume.
-        hardWare.frontLeft.setPower(0.0);
-        hardWare.frontRight.setPower(0.0);
-        hardWare.backLeft.setPower(0.0);
-        hardWare.backRight.setPower(0.0);
+        hardWare.setFrontLeftPower(0.0);
+        hardWare.setFrontRightPower(0.0);
+        hardWare.setBackLeftPower(0.0);
+        hardWare.setBackRightPower(0.0);
     }
 
     public void drive() {
@@ -86,8 +85,8 @@ public class PathController {
         // and adjusts motor power to drive towards target x,y and targetHeadingDeg.
 
         // This gets the current x,y and normalized [180,-180) heading
-        hardWare.imuPos.update();
-        lastPose = hardWare.imuPos.getPose();
+        hardWare.updateImuPos();
+        lastPose = hardWare.getImuPose();
 
         // Compute normalize vector pointing to target location.
         motionVector.subtractInPlace(targetLocation,lastPose);
@@ -141,10 +140,10 @@ public class PathController {
 
     private void setMotorPower()
     {
-        hardWare.frontLeft.setPower(powerRampControlFl.getValue(frontLeftPower));
-        hardWare.frontRight.setPower(powerRampControlFr.getValue(frontRightPower));
-        hardWare.backLeft.setPower(powerRampControlBl.getValue(backLeftPower));
-        hardWare.backRight.setPower(powerRampControlBr.getValue(backRightPower));
+        hardWare.setFrontLeftPower(powerRampControlFl.getValue(frontLeftPower));
+        hardWare.setFrontRightPower(powerRampControlFr.getValue(frontRightPower));
+        hardWare.setBackLeftPower(powerRampControlBl.getValue(backLeftPower));
+        hardWare.setBackRightPower(powerRampControlBr.getValue(backRightPower));
     }
 
     private double clampRange(double value, double min, double max) {
@@ -163,19 +162,19 @@ public class PathController {
                 "currentLoc x:", lastPose.getX(DistanceUnit.INCH),
                 "currentLoc y:", lastPose.getY(DistanceUnit.INCH),
                 "currentHeading:", lastPose.getHeading(AngleUnit.DEGREES),
-                "getheading:", hardWare.imuPos.getHeading(AngleUnit.DEGREES),
+                "getheading:", hardWare.getImuHeading(AngleUnit.DEGREES),
                 "delta Target:", Vector2.deltaNorm(lastPose, targetLocation),
                 "rotscaler:", rotationScalar,
                 "vecsum:", vectorSum,
                 "normalize:", normalize,
-                "fl power", hardWare.frontLeft.getPower(),
-                "fr power", hardWare.frontRight.getPower(),
-                "bl power", hardWare.backLeft.getPower(),
-                "br power", hardWare.backRight.getPower());
+                "fl power", hardWare.getFrontLeftPower(),
+                "fr power", hardWare.getFrontRightPower(),
+                "bl power", hardWare.getBackLeftPower(),
+                "br power", hardWare.getBackRightPower());
     }
 
     private final LinearOpMode opMode;
-    private final Hardware hardWare;
+    private final org.firstinspires.ftc.teamcode.TeamInterfaces.HardWareI hardWare;
 
     double targetHeadingDeg;
     Vector2 targetLocation = new Vector2(0,0);

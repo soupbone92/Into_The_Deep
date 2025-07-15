@@ -41,5 +41,4 @@ public class TestTeamCode {
         assertEquals(14, result.x, 0.01);
         assertEquals(-10, result.y, 0.01);
     }
-
 }
