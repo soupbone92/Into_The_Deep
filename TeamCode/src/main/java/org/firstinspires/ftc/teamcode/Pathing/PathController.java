@@ -1,21 +1,22 @@
 package org.firstinspires.ftc.teamcode.Pathing;
+
 import android.util.Log;
 
 import androidx.annotation.NonNull;
-
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.teamcode.Math.Matrix2;
 import org.firstinspires.ftc.teamcode.Math.Vector2;
+import org.firstinspires.ftc.teamcode.Interfaces.OpModeI;
 import org.firstinspires.ftc.teamcode.TelemetryHelper;
 import org.firstinspires.ftc.teamcode.utils.SystemTimeSource;
+import org.firstinspires.ftc.teamcode.Interfaces.HardWareI;
 
 public class PathController {
 
-    public PathController(org.firstinspires.ftc.teamcode.TeamInterfaces.HardWareI hw, LinearOpMode opMode, double nominalPower) {
+    public PathController(HardWareI hw, OpModeI opMode, double nominalPower) {
         this.hardWare = hw;
         this.opMode = opMode;
         this.nominalPower = nominalPower;
@@ -158,7 +159,7 @@ public class PathController {
 
     public void updateTelemetry()
     {
-        TelemetryHelper.UpdateTelemetry(opMode.telemetry,
+        TelemetryHelper.UpdateTelemetry(opMode.getTelemetry(),
                 "currentLoc x:", lastPose.getX(DistanceUnit.INCH),
                 "currentLoc y:", lastPose.getY(DistanceUnit.INCH),
                 "currentHeading:", lastPose.getHeading(AngleUnit.DEGREES),
@@ -173,8 +174,8 @@ public class PathController {
                 "br power", hardWare.getBackRightPower());
     }
 
-    private final LinearOpMode opMode;
-    private final org.firstinspires.ftc.teamcode.TeamInterfaces.HardWareI hardWare;
+    private final OpModeI opMode;
+    private final org.firstinspires.ftc.teamcode.Interfaces.HardWareI hardWare;
 
     double targetHeadingDeg;
     Vector2 targetLocation = new Vector2(0,0);

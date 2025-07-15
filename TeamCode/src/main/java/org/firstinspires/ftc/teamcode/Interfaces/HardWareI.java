@@ -1,10 +1,14 @@
-package org.firstinspires.ftc.teamcode.TeamInterfaces;
+package org.firstinspires.ftc.teamcode.Interfaces;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 
 public interface HardWareI {
     void updateImuPos();
+    void resetImu();
+
+    void resetImuHeading();
+
     Pose2D getImuPose();
     double getImuHeading(AngleUnit unit);
     void setFrontLeftPower(double power);

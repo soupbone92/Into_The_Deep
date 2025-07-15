@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
-import org.firstinspires.ftc.teamcode.TeamInterfaces.HardWareI;
+import org.firstinspires.ftc.teamcode.Interfaces.HardWareI;
 
 // Initializes and tracks the Robot Hardware.
 public class Hardware implements HardWareI {
@@ -97,6 +97,16 @@ public class Hardware implements HardWareI {
     @Override
     public void updateImuPos() {
         imuPos.update();
+    }
+
+    @Override
+    public void resetImu() {
+        imuPos.reset();
+    }
+
+    @Override
+    public void resetImuHeading() {
+        imuPos.resetHeading();
     }
 
     @Override

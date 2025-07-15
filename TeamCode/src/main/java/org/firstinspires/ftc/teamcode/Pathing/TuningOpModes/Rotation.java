@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.teamcode.Implementations.LinearOpModeImpl;
 import org.firstinspires.ftc.teamcode.Pathing.PathController;
 import org.firstinspires.ftc.teamcode.RobotHardware.Hardware;
 import org.firstinspires.ftc.teamcode.TelemetryHelper;
@@ -24,7 +25,9 @@ public class Rotation extends LinearOpMode {
         waitForStart();
 
         double targetDeg = 90.0;
-        PathController pc = new PathController(hw, this, 0.5);
+        LinearOpModeImpl ourOp = new LinearOpModeImpl(this);
+
+        PathController pc = new PathController(hw, ourOp, 0.5);
         pc.setTargetHeadingDeg(targetDeg);
         while (!this.isStopRequested()) {
             hw.imuPos.update();

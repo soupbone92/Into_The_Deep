@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.OpModes.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.teamcode.Implementations.LinearOpModeImpl;
 import org.firstinspires.ftc.teamcode.Pathing.PathController;
 import org.firstinspires.ftc.teamcode.RobotHardware.Hardware;
 import org.firstinspires.ftc.teamcode.TelemetryHelper;
@@ -18,7 +19,9 @@ public class ExampleNewPathing extends LinearOpMode {
         // wait for start to be pushed.
         waitForStart();
 
-        PathController pathing = new PathController(hw, this, 0.3);
+        LinearOpModeImpl ourOp = new LinearOpModeImpl(this);
+
+        PathController pathing = new PathController(hw, ourOp, 0.3);
 
         pause();
         // Move forward 24 inches.
