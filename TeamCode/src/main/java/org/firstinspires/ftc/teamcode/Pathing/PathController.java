@@ -11,15 +11,19 @@ import org.firstinspires.ftc.teamcode.Math.Matrix2;
 import org.firstinspires.ftc.teamcode.Math.Vector2;
 import org.firstinspires.ftc.teamcode.Interfaces.OpModeI;
 import org.firstinspires.ftc.teamcode.TelemetryHelper;
-import org.firstinspires.ftc.teamcode.utils.SystemTimeSource;
-import org.firstinspires.ftc.teamcode.Interfaces.HardWareI;
+import org.firstinspires.ftc.teamcode.Implementations.SystemTimeSource;
+import org.firstinspires.ftc.teamcode.Interfaces.HardwareI;
+import org.firstinspires.ftc.teamcode.Interfaces.TimeSourceI;
 
 public class PathController {
 
-    public PathController(HardWareI hw, OpModeI opMode, double nominalPower) {
+    private final TimeSourceI timeSource;
+
+    public PathController(HardwareI hw, OpModeI opMode, double nominalPower, TimeSourceI ts) {
         this.hardWare = hw;
         this.opMode = opMode;
         this.nominalPower = nominalPower;
+        this.timeSource = ts;
     }
 
     public void setNominalPower(double power)
@@ -175,7 +179,7 @@ public class PathController {
     }
 
     private final OpModeI opMode;
-    private final org.firstinspires.ftc.teamcode.Interfaces.HardWareI hardWare;
+    private final HardwareI hardWare;
 
     double targetHeadingDeg;
     Vector2 targetLocation = new Vector2(0,0);
@@ -201,6 +205,9 @@ public class PathController {
     public void run() {
         // Runs until stop or at target.
         while(notAtTarget() && !opMode.isStopRequested()) {
+            long time_ms = timeSource.currentTimeMillis();
+            hardWare.updateState(time_ms); // used for simulation
+            opMode.updateState(time_ms); // used for simulation
             drive();
             updateTelemetry();
         }

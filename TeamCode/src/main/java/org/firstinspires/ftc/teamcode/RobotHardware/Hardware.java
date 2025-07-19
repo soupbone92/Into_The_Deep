@@ -7,10 +7,11 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
-import org.firstinspires.ftc.teamcode.Interfaces.HardWareI;
+import org.firstinspires.ftc.teamcode.Interfaces.HardwareI;
+import org.firstinspires.ftc.teamcode.Interfaces.ImuPositionWrapper;
 
 // Initializes and tracks the Robot Hardware.
-public class Hardware implements HardWareI {
+public class Hardware implements HardwareI {
 
     public Hardware(HardwareMap hardwareMap) throws InterruptedException {
         InitDriveMotors(hardwareMap);
@@ -159,5 +160,11 @@ public class Hardware implements HardWareI {
     @Override
     public double getBackRightPower() {
         return backRight.getPower();
+    }
+
+    @Override
+    public void updateState(long time_ms) {
+        // No needed when running robot.
+        // Maybe could be useful in the future?
     }
 }

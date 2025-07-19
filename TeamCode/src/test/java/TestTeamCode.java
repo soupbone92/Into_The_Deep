@@ -13,6 +13,8 @@ import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import Fakes.FakeTimeSource;
+
 @RunWith(MockitoJUnitRunner.class)
 public class TestTeamCode {
     @Test

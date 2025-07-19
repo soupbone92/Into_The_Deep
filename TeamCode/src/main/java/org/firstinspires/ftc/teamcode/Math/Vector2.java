@@ -14,6 +14,13 @@ public class Vector2 {
         this.y = y;
     }
 
+    public static Vector2 add(Vector2 v1, Vector2 v2, Vector2 v3, Vector2 v4)
+    {
+        return new Vector2(
+                v1.x+v2.x+v3.x+v4.x,
+                v1.y+v2.y+v3.y+v4.y);
+    }
+
     public double norm() {
         // Euclidean norm of vector represents
         // length/magnitude of vector.
@@ -65,5 +72,15 @@ public class Vector2 {
     public void setZero() {
         x = 0;
         y = 0;
+    }
+
+    static public Vector2 mult(Vector2 lh, double scaler)
+    {
+        return new Vector2(lh.x * scaler, lh.y*scaler);
+    }
+
+    static public Vector2 add(Vector2 lh, Vector2 rh)
+    {
+        return new Vector2(lh.x + rh.x, lh.y + rh.y);
     }
 }

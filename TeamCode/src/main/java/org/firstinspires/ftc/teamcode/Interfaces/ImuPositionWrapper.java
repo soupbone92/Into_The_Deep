@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.RobotHardware;
+package org.firstinspires.ftc.teamcode.Interfaces;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;

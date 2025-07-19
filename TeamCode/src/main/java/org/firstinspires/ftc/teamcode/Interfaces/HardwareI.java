@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.Interfaces;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 
-public interface HardWareI {
+public interface HardwareI {
     void updateImuPos();
     void resetImu();
 
@@ -20,4 +20,5 @@ public interface HardWareI {
     double getBackLeftPower();
     double getBackRightPower();
 
+    void updateState(long time_ms);
 }

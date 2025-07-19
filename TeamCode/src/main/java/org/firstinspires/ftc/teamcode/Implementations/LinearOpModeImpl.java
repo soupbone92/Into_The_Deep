@@ -21,4 +21,9 @@ public class LinearOpModeImpl implements OpModeI {
     public Telemetry getTelemetry() {
         return opMode.telemetry;
     }
+
+    @Override
+    public void updateState(long time_ms) {
+
+    }
 }

@@ -1,6 +1,9 @@
 import org.firstinspires.ftc.teamcode.Pathing.PathController;
 import org.junit.Test;
 
+import Fakes.FakeHardware;
+import Fakes.FakeTimeSource;
+
 public class TestPathingPackage {
 
     @Test
@@ -8,10 +11,7 @@ public class TestPathingPackage {
     {
         FakeHardware hw = new FakeHardware();
         hw.resetImu();
-        // wait for start to be pushed.
-
-        PathController pathing = new PathController(hw, null, 0.3);
-
+        PathController pathing = new PathController(hw, null, 0.3, new FakeTimeSource());
         // Move forward 24 inches.
         pathing.setTargetHeadingDeg(0);
         pathing.setTargetLocation(24,0);

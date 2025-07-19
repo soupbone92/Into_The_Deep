@@ -5,4 +5,6 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 public interface OpModeI {
     boolean isStopRequested();
     Telemetry getTelemetry();
+
+    void updateState(long time_ms);
 }

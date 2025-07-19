@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode.Pathing;
 
 import android.util.Log;
 
-import org.firstinspires.ftc.teamcode.utils.TimeSource;
+import org.firstinspires.ftc.teamcode.Interfaces.TimeSourceI;
 
 public class PIDController {
     private double kP, kI, kD;
@@ -10,9 +10,9 @@ public class PIDController {
     private double integralSum;
     private double lastError;
     private long lastTime;
-    private TimeSource timeSource;
+    private TimeSourceI timeSource;
 
-    public PIDController(double kP, double kI, double kD, TimeSource ts) {
+    public PIDController(double kP, double kI, double kD, TimeSourceI ts) {
         this.kP = kP;
         this.kI = kI;
         this.kD = kD;
