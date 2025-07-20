@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.OpModes.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.teamcode.Implementations.AndroidLog;
 import org.firstinspires.ftc.teamcode.Implementations.LinearOpModeImpl;
 import org.firstinspires.ftc.teamcode.Implementations.SystemTimeSource;
 import org.firstinspires.ftc.teamcode.Implementations.TelemetryWrapper;
@@ -24,7 +25,7 @@ public class ExampleNewPathing extends LinearOpMode {
 
         LinearOpModeImpl ourOp = new LinearOpModeImpl(this);
 
-        PathController pathing = new PathController(hw, ourOp, 0.3, new SystemTimeSource());
+        PathController pathing = new PathController(hw, ourOp, 0.3, new SystemTimeSource(), new AndroidLog());
 
         pause();
         // Move forward 24 inches.

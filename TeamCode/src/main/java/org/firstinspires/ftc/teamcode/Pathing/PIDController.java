@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.Pathing;
 
 import android.util.Log;
 
+import org.firstinspires.ftc.teamcode.Constants;
 import org.firstinspires.ftc.teamcode.Interfaces.TimeSourceI;
 
 public class PIDController {
@@ -9,18 +10,13 @@ public class PIDController {
     private double target;
     private double integralSum;
     private double lastError;
-    private long lastTime;
-    private TimeSourceI timeSource;
 
-    public PIDController(double kP, double kI, double kD, TimeSourceI ts) {
+    public PIDController(double kP, double kI, double kD) {
         this.kP = kP;
         this.kI = kI;
         this.kD = kD;
         this.integralSum = 0;
         this.lastError = 0;
-        timeSource = ts;
-        this.lastTime = timeSource.currentTimeMillis();
-
     }
 
     public void updateCoefficients(double kP, double kI, double kD)
@@ -34,26 +30,23 @@ public class PIDController {
         this.target = target;
     }
 
-    public double calculate(double currentPoint)
+    public double calculate(double currentPoint, TimeSourceI timeSource)
     {
+        long deltaTimeMs = timeSource.deltaTimeMs();
+        double deltaTimeSec = Constants.millisecondsToSeconds((double)deltaTimeMs);
 
-        double milliToSec = 1.0/1000.0;
-        long currentTime = timeSource.currentTimeMillis();
-        long deltaTime = (currentTime - lastTime);
-
-        double error = target - currentPoint;
-        integralSum += error * deltaTime;
-
+        double error = currentPoint-target;
+        integralSum += error * deltaTimeSec;
 
         double output;
-        if(deltaTime == 0) {
+        if(deltaTimeSec == 0) {
             // Avoid divide by zero it deltaTime is zero.
             double P = kP * error;
             double I = kI * integralSum;
             output = P + I;
         }
         else {
-            double derivative = (error - lastError) / (deltaTime * milliToSec);
+            double derivative = (error - lastError) / deltaTimeSec;
             double P = kP * error;
             double I = kI * integralSum;
             double D = kD * derivative;
@@ -61,11 +54,6 @@ public class PIDController {
         }
 
         lastError = error;
-        lastTime = currentTime;
-
-        Log.d("Calculate", String.format("Target: %f", this.target));
-        Log.d("Calculate", String.format("CurrentPoint: %f", currentPoint));
-        Log.d("Calculate", String.format("Output: %f", output));
 
         return output;
     }
@@ -73,7 +61,6 @@ public class PIDController {
     public void reset() {
         integralSum = 0;
         lastError = 0;
-        lastTime = System.currentTimeMillis();
     }
 
     public void setCoeff(double kp, double ki, double kd) {

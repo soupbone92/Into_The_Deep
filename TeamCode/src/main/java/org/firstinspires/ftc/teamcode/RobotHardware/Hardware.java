@@ -9,6 +9,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.teamcode.Interfaces.HardwareI;
 import org.firstinspires.ftc.teamcode.Interfaces.ImuPositionWrapper;
+import org.firstinspires.ftc.teamcode.Interfaces.TimeSourceI;
 
 // Initializes and tracks the Robot Hardware.
 public class Hardware implements HardwareI {
@@ -163,7 +164,7 @@ public class Hardware implements HardwareI {
     }
 
     @Override
-    public void updateState(long time_ms) {
+    public void updateState(TimeSourceI timeSource) {
         // No needed when running robot.
         // Maybe could be useful in the future?
     }

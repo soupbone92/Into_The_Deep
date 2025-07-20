@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
+import org.firstinspires.ftc.teamcode.Interfaces.LogI;
 import org.firstinspires.ftc.teamcode.Math.Matrix2;
 import org.firstinspires.ftc.teamcode.Math.Vector2;
 import org.firstinspires.ftc.teamcode.Interfaces.OpModeI;
@@ -18,12 +19,20 @@ import org.firstinspires.ftc.teamcode.Interfaces.TimeSourceI;
 public class PathController {
 
     private final TimeSourceI timeSource;
+    private final LogI log;
 
-    public PathController(HardwareI hw, OpModeI opMode, double nominalPower, TimeSourceI ts) {
+    public PathController(HardwareI hw, OpModeI opMode, double nominalPower, TimeSourceI ts, LogI logInterface) {
         this.hardWare = hw;
         this.opMode = opMode;
         this.nominalPower = nominalPower;
         this.timeSource = ts;
+        this.log = logInterface;
+
+        powerRampControlFl = new PowerRampController(.1, timeSource);
+        powerRampControlFr = new PowerRampController(.1, timeSource);
+        powerRampControlBl = new PowerRampController(.1, timeSource);
+        powerRampControlBr = new PowerRampController(.1, timeSource);
+
     }
 
     public void setNominalPower(double power)
@@ -47,13 +56,13 @@ public class PathController {
         // Drive to relative x,y (inches) position and maintain/rotate to targetHeadingDeg.
         // Coordinate system of play field based on initial position of robot.
         // R = robot, ^ = initial facing position of robot.
-        //         +X
+        //         +Y
         //          ^  ^
         //          |  R
-        //+Y <------|------>-Y
+        //-X <------|------>+X
         //          |
         //          \/
-        //         -X
+        //         -Y
 
         this.targetLocation.x = x;
         this.targetLocation.y = y;
@@ -68,9 +77,10 @@ public class PathController {
     public boolean notAtTarget()
     {
         // Test is not at target heading and loc.
-        double closeEnoughInches = 0.25;
+        double closeEnoughInches = 0.05;
         Pose2D currentPose = hardWare.getImuPose();
-        boolean atLoc = Vector2.deltaNorm(currentPose, targetLocation) < closeEnoughInches;
+        double delta = Vector2.deltaNorm(currentPose, targetLocation);
+        boolean atLoc = delta < closeEnoughInches;
         boolean atHeading = compareHeading(currentPose.getHeading(AngleUnit.DEGREES), targetHeadingDeg);
         return !(atLoc && atHeading);
     }
@@ -98,31 +108,28 @@ public class PathController {
         motionVector.normalize();
 
         // Based on how far the
-        double deltaTargetPidValue = deltaTargetPid.calculate(Vector2.deltaNorm(lastPose, targetLocation));
-        Log.d("drive", String.format("deltaTargetPidValue: %f", deltaTargetPidValue));
+        double deltaToTarget = Vector2.deltaNorm(lastPose, targetLocation);
+        double deltaTargetPidValue = deltaTargetPid.calculate(deltaToTarget, timeSource);
+        log.d("drive", String.format("deltaTargetPidValue: %f", deltaTargetPidValue));
         deltaTargetPidValue = clampRange(deltaTargetPidValue, -0.9, 0.9);
         motionVector.scale(nominalPower*deltaTargetPidValue);
 
         // Rotate the vector based on robot heading to
         // get the power vector needed to drive that direction.
-        robotToFieldRotation.setRotation(lastPose.getHeading(AngleUnit.RADIANS), AngleUnit.RADIANS);
+        double heading = lastPose.getHeading(AngleUnit.RADIANS);
+        robotToFieldRotation.setRotation(heading, AngleUnit.RADIANS);
         robotRelativePowerVector = robotToFieldRotation.mult(motionVector);
 
         // Calculate rotation correction using PID.
         headingPid.setTargetPoint(targetHeadingDeg);
-        rotationScalar = headingPid.calculate(lastPose.getHeading(AngleUnit.DEGREES));
+        rotationScalar = headingPid.calculate(heading, timeSource);
 
         // Clamp magnitude of rotationScalar [-0.3, 0.3]
         rotationScalar = clampRange(rotationScalar, -0.3, 0.3);
 
         // Normalize output power [-1.0-1.0]
-        vectorSum = Math.abs(robotRelativePowerVector.y) + Math.abs(robotRelativePowerVector.x) + Math.abs(rotationScalar);
+        vectorSum = Math.abs(robotRelativePowerVector.x) + Math.abs(robotRelativePowerVector.y) + Math.abs(rotationScalar);
         normalize = 1.0 / Math.max(vectorSum, 1.0);
-
-        // TESTING set motion vector to zero to only test rotation
-        // Comment out to test motion/direction
-        robotRelativePowerVector.setZero();
-        // End testing
 
         // Set normalized field centric power levels.
         // Clamp to valid range [-1,1] for motors.
@@ -145,10 +152,15 @@ public class PathController {
 
     private void setMotorPower()
     {
-        hardWare.setFrontLeftPower(powerRampControlFl.getValue(frontLeftPower));
-        hardWare.setFrontRightPower(powerRampControlFr.getValue(frontRightPower));
-        hardWare.setBackLeftPower(powerRampControlBl.getValue(backLeftPower));
-        hardWare.setBackRightPower(powerRampControlBr.getValue(backRightPower));
+        double fl = powerRampControlFl.getValue(frontLeftPower);
+        double fr = powerRampControlFr.getValue(frontRightPower);
+        double bl = powerRampControlBl.getValue(backLeftPower);
+        double br = powerRampControlBr.getValue(backRightPower);
+
+        hardWare.setFrontLeftPower(fl);
+        hardWare.setFrontRightPower(fr);
+        hardWare.setBackLeftPower(bl);
+        hardWare.setBackRightPower(br);
     }
 
     private double clampRange(double value, double min, double max) {
@@ -178,6 +190,33 @@ public class PathController {
                 "br power", hardWare.getBackRightPower());
     }
 
+
+    public boolean run() {
+        // Runs until stop or at target.
+        return run(10);
+    }
+    public boolean run(long timeoutSec) {
+        // Runs until stop or at target or timeout reached.
+        while(notAtTarget() && !opMode.isStopRequested()) {
+            timeSource.update();
+            hardWare.updateState(timeSource); // used for simulation
+            opMode.updateState(timeSource); // used for simulation
+            drive();
+            updateTelemetry();
+
+            if(timeSource.totalRunningTimeMs()/1000 > timeoutSec) {
+                log.d("PathController", "run time: " + timeSource.totalRunningTimeMs());
+                return false;
+            }
+        }
+        log.d("PathController", "run time: " + timeSource.totalRunningTimeMs());
+        return true;
+    }
+
+    public void setRotPidCoeff(double kp, double ki, double kd) {
+        this.headingPid.setCoeff(kp,ki,kd);
+    }
+
     private final OpModeI opMode;
     private final HardwareI hardWare;
 
@@ -195,27 +234,13 @@ public class PathController {
     double backRightPower;
     Matrix2 robotToFieldRotation = new Matrix2();
     Vector2 robotRelativePowerVector = new Vector2(0,0);
-    PIDController headingPid = new PIDController(0.3,0,0, new SystemTimeSource());
-    PIDController deltaTargetPid = new PIDController(.5,0, 0, new SystemTimeSource());
-    PowerRampController powerRampControlFl = new PowerRampController(.1);
-    PowerRampController powerRampControlFr = new PowerRampController(.1);
-    PowerRampController powerRampControlBl = new PowerRampController(.1);
-    PowerRampController powerRampControlBr = new PowerRampController(.1);
 
-    public void run() {
-        // Runs until stop or at target.
-        while(notAtTarget() && !opMode.isStopRequested()) {
-            long time_ms = timeSource.currentTimeMillis();
-            hardWare.updateState(time_ms); // used for simulation
-            opMode.updateState(time_ms); // used for simulation
-            drive();
-            updateTelemetry();
-        }
-    }
-
-    public void setRotPidCoeff(double kp, double ki, double kd) {
-        this.headingPid.setCoeff(kp,ki,kd);
-    }
+    PIDController headingPid = new PIDController(0.3,0,0);
+    PIDController deltaTargetPid = new PIDController(0.7,0, .1);
+    PowerRampController powerRampControlFl;
+    PowerRampController powerRampControlFr;
+    PowerRampController powerRampControlBl;
+    PowerRampController powerRampControlBr;
 }
 
 

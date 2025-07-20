@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.OpModes.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
+import org.firstinspires.ftc.teamcode.Implementations.AndroidLog;
 import org.firstinspires.ftc.teamcode.Implementations.LinearOpModeImpl;
 import org.firstinspires.ftc.teamcode.Implementations.SystemTimeSource;
 import org.firstinspires.ftc.teamcode.Pathing.PathController;
@@ -21,7 +22,7 @@ public class RonAuto extends LinearOpMode {
         waitForStart();
         LinearOpModeImpl ourOp = new LinearOpModeImpl(this);
 
-        PathController pathing = new PathController(hw, ourOp, 0.5, new SystemTimeSource());
+        PathController pathing = new PathController(hw, ourOp, 0.5, new SystemTimeSource(), new AndroidLog());
     }
 
     private void pause() {

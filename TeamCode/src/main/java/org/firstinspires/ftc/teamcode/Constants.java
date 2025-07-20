@@ -26,4 +26,14 @@ public class Constants {
     // Offset along the y-axis from where you want 0,0 to be relative to the robot
     // for the strafe encoder.
     public static final double yStrafeEncoderOffsetInches = 122*mmToInch;
+
+    public static long millisecondsToSeconds(long ms)
+    {
+        return ms/1000;
+    }
+
+    public static double millisecondsToSeconds(double ms)
+    {
+        return ms/1000.0;
+    }
 }

@@ -88,4 +88,10 @@ public class Vector2 {
     public double angle(AngleUnit angleUnit) {
         return Math.atan2(y, x);
     }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return "[" + x + ", " + y + "]";
+    }
 }

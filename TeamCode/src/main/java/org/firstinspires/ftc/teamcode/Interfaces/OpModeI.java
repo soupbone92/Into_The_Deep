@@ -5,5 +5,5 @@ public interface OpModeI {
     boolean isStopRequested();
     TelemetryI getTelemetry();
 
-    void updateState(long time_ms);
+    void updateState(TimeSourceI timeSource);
 }

@@ -1,5 +1,10 @@
 package org.firstinspires.ftc.teamcode.Interfaces;
 
 public interface TimeSourceI {
+    void update();
     long currentTimeMillis();
+    long totalRunningTimeMs();
+    long deltaTimeMs();
+
+    // Used for debugging.  Update to the next time step.
 }

@@ -5,6 +5,7 @@ import android.util.Log;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
+import org.firstinspires.ftc.teamcode.Interfaces.TimeSourceI;
 import org.firstinspires.ftc.teamcode.Math.Vector2;
 import org.firstinspires.ftc.teamcode.Pathing.PIDController;
 import org.junit.Test;
@@ -21,14 +22,17 @@ public class TestTeamCode {
     public void testPid()
     {
         try (MockedStatic<Log> logMock = Mockito.mockStatic(Log.class)) {
-            PIDController testPid = new PIDController(1, 0, 0, new FakeTimeSource());
+            PIDController testPid = new PIDController(1, 0, 0);
 
+            TimeSourceI timeSource = new FakeTimeSource();
+            timeSource.update();
+            long currentTimeMs = timeSource.currentTimeMillis();
             double output;
             testPid.setTargetPoint(10);
 
-            output = testPid.calculate(1);
+            output = testPid.calculate(1, timeSource);
             assertEquals(9.0, output, .01);
-            output = testPid.calculate(15);
+            output = testPid.calculate(15, timeSource);
             assertEquals(-5.0, output, .01);
         }
     }

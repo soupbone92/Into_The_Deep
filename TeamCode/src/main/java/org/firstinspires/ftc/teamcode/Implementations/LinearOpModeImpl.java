@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Interfaces.OpModeI;
 import org.firstinspires.ftc.teamcode.Interfaces.TelemetryI;
+import org.firstinspires.ftc.teamcode.Interfaces.TimeSourceI;
 
 public class LinearOpModeImpl implements OpModeI {
     LinearOpMode opMode;
@@ -24,7 +25,6 @@ public class LinearOpModeImpl implements OpModeI {
     }
 
     @Override
-    public void updateState(long time_ms) {
-
+    public void updateState(TimeSourceI timeSource) {
     }
 }

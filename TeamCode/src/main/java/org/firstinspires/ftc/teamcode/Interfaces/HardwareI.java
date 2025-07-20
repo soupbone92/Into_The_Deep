@@ -20,5 +20,5 @@ public interface HardwareI {
     double getBackLeftPower();
     double getBackRightPower();
 
-    void updateState(long time_ms);
+    void updateState(TimeSourceI timeSource);
 }

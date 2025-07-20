@@ -1,20 +1,24 @@
 package org.firstinspires.ftc.teamcode.Pathing;
 
+import org.firstinspires.ftc.teamcode.Interfaces.TimeSourceI;
+
 // Used to limit rate of change in power to motors.
 public class PowerRampController {
     public double maxChange;
     public double lastValue;
     public double lastTimeSetMs;
     public double minTimeSec = 20;
+    TimeSourceI timeSource;
 
-    PowerRampController(double maxChange)
+    PowerRampController(double maxChange, TimeSourceI ts)
     {
         this.maxChange = maxChange;
+        timeSource = ts;
     }
 
     public double getValue(double newValue)
     {
-        double currentTime = System.currentTimeMillis();
+        double currentTime = timeSource.currentTimeMillis();
         double deltaTime = (currentTime - lastTimeSetMs);
 
         if(deltaTime < minTimeSec) {

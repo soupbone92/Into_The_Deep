@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.Math;
 
+import androidx.annotation.NonNull;
+
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 // Simple class to represent matrix for 2d vectors.
@@ -35,7 +37,7 @@ public class Matrix2 {
         }
 
         coeff[0] = Math.cos(angle);
-        coeff[1] = -Math.cos(angle);
+        coeff[1] = -Math.sin(angle);
         coeff[2] = 0;
         coeff[3] = Math.sin(angle);
         coeff[4] = Math.cos(angle);
@@ -51,6 +53,12 @@ public class Matrix2 {
         return new Vector2(
                 vec.x * coeff[0] + vec.y * coeff[1] + coeff[2],
                 vec.y * coeff[3] + vec.y * coeff[4] + coeff[5]);
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return coeff[0] + "," + coeff[1] + "," + coeff[2] + ";" + coeff[3] + "," + coeff[4] + "," + coeff[5];
     }
 
 //    public final static Matrix2 rotccw90 = new Matrix2(90, AngleUnit.DEGREES);
