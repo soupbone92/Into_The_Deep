@@ -35,7 +35,7 @@ public class PathController {
         powerRampControlBl = new PowerRampController(.1, timeSource);
         powerRampControlBr = new PowerRampController(.1, timeSource);
 
-        headingPid = new PIDController(-0.01,0,0);
+        headingPid = new PIDController(0.01,0,0);
         deltaTargetPid = new PIDController(0.7,0, .1);
     }
 
