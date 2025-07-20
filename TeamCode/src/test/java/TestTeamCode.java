@@ -26,13 +26,14 @@ public class TestTeamCode {
 
             TimeSourceI timeSource = new FakeTimeSource();
             timeSource.update();
-            long currentTimeMs = timeSource.currentTimeMillis();
             double output;
             testPid.setTargetPoint(10);
 
             output = testPid.calculate(1, timeSource);
+            timeSource.update();
             assertEquals(9.0, output, .01);
             output = testPid.calculate(15, timeSource);
+            timeSource.update();
             assertEquals(-5.0, output, .01);
         }
     }

@@ -113,7 +113,8 @@ public class PathController {
 
         // Based on how far the
         double deltaToTarget = Vector2.deltaNorm(lastPose, targetLocation);
-        double deltaTargetPidValue = deltaTargetPid.calculate(deltaToTarget, timeSource);
+        // Need to invert the pid value here since we are using using delta instead of position.
+        double deltaTargetPidValue = -deltaTargetPid.calculate(deltaToTarget, timeSource);
         log.d("drive", String.format("deltaTargetPidValue: %f", deltaTargetPidValue));
         deltaTargetPidValue = clampRange(deltaTargetPidValue, -0.9, 0.9);
         motionVector.scale(nominalPower*deltaTargetPidValue);

@@ -119,7 +119,7 @@ public class FakeHardware implements HardwareI {
 
         // Only care about y components since left and right vector sums are tangent
         // in the y direction to the robots center of rotation.
-        double tangentialVelocity = -((leftVelocity.y - rightVelocity.y) * 0.5);
+        double tangentialVelocity = (leftVelocity.y - rightVelocity.y) * 0.5;
         double arclengthTraveled = tangentialVelocity * deltaTimeSec;
         // convert the length to radians
         double deltaAngleRad = 2 * Math.PI * (arclengthTraveled / wheelTrackRadiusInches);

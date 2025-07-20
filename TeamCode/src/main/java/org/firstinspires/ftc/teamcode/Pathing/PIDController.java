@@ -2,6 +2,8 @@ package org.firstinspires.ftc.teamcode.Pathing;
 
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
 import org.firstinspires.ftc.teamcode.Constants;
 import org.firstinspires.ftc.teamcode.Interfaces.TimeSourceI;
 
@@ -30,12 +32,12 @@ public class PIDController {
         this.target = target;
     }
 
-    public double calculate(double currentPoint, TimeSourceI timeSource)
+    public double calculate(double currentPoint, @NonNull TimeSourceI timeSource)
     {
         long deltaTimeMs = timeSource.deltaTimeMs();
         double deltaTimeSec = Constants.millisecondsToSeconds((double)deltaTimeMs);
 
-        double error = currentPoint-target;
+        double error = target - currentPoint;
         integralSum += error * deltaTimeSec;
 
         double output;
