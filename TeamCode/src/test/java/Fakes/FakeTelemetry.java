@@ -9,4 +9,9 @@ public class FakeTelemetry implements TelemetryI {
     public Telemetry.Item addData(String caption, Object value) {
         return null;
     }
+
+    @Override
+    public void update() {
+
+    }
 }

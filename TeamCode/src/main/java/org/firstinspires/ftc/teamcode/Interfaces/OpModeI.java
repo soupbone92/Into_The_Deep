@@ -1,10 +1,9 @@
 package org.firstinspires.ftc.teamcode.Interfaces;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public interface OpModeI {
     boolean isStopRequested();
-    Telemetry getTelemetry();
+    TelemetryI getTelemetry();
 
     void updateState(long time_ms);
 }

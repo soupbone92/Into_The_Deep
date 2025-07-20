@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Interfaces.OpModeI;
+import org.firstinspires.ftc.teamcode.Interfaces.TelemetryI;
 
 public class LinearOpModeImpl implements OpModeI {
     LinearOpMode opMode;
@@ -18,8 +19,8 @@ public class LinearOpModeImpl implements OpModeI {
     }
 
     @Override
-    public Telemetry getTelemetry() {
-        return opMode.telemetry;
+    public TelemetryI getTelemetry() {
+        return new TelemetryWrapper(opMode.telemetry);
     }
 
     @Override

@@ -5,6 +5,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.Implementations.LinearOpModeImpl;
 import org.firstinspires.ftc.teamcode.Implementations.SystemTimeSource;
+import org.firstinspires.ftc.teamcode.Implementations.TelemetryWrapper;
+import org.firstinspires.ftc.teamcode.Interfaces.TelemetryI;
 import org.firstinspires.ftc.teamcode.Pathing.PathController;
 import org.firstinspires.ftc.teamcode.RobotHardware.Hardware;
 import org.firstinspires.ftc.teamcode.TelemetryHelper;
@@ -42,11 +44,12 @@ public class ExampleNewPathing extends LinearOpMode {
     }
 
     private void pause() {
-        TelemetryHelper.UpdateTelemetry(this.telemetry, "Push B to continue...");
+        TelemetryHelper.UpdateTelemetry(myTelem, "Push B to continue...");
         while(!gamepad1.b)
             sleep(250);
     }
 
     Hardware hw;
     double power = 0.5;
+    TelemetryI myTelem = new TelemetryWrapper(this.telemetry);
 }

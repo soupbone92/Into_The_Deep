@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.Math;
 
 import androidx.annotation.NonNull;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 
@@ -82,5 +83,9 @@ public class Vector2 {
     static public Vector2 add(Vector2 lh, Vector2 rh)
     {
         return new Vector2(lh.x + rh.x, lh.y + rh.y);
+    }
+
+    public double angle(AngleUnit angleUnit) {
+        return Math.atan2(y, x);
     }
 }

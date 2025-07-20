@@ -5,11 +5,15 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.teamcode.Implementations.TelemetryWrapper;
+import org.firstinspires.ftc.teamcode.Interfaces.TelemetryI;
 import org.firstinspires.ftc.teamcode.RobotHardware.Hardware;
 import org.firstinspires.ftc.teamcode.TelemetryHelper;
 
 @TeleOp
 public class HighTel extends LinearOpMode {
+
+    TelemetryI mytelem = new TelemetryWrapper(this.telemetry);
     @Override
     public void runOpMode() throws InterruptedException {
         hw = new Hardware(hardwareMap);
@@ -113,7 +117,7 @@ public class HighTel extends LinearOpMode {
         double bluePos = hw.blueLift.getCurrentPosition();
 
         // Show the position of the motor on telemetry
-        TelemetryHelper.UpdateTelemetry(telemetry,
+        TelemetryHelper.UpdateTelemetry(mytelem,
                 "bot heading", botHeading,
                 "Position X", xo,
                 "Position Y", yo,

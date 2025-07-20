@@ -4,8 +4,11 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.teamcode.Interfaces.HardwareI;
+import org.firstinspires.ftc.teamcode.Math.Matrix2;
 import org.firstinspires.ftc.teamcode.Math.Vector2;
 
+// Simple robot drive train simulation for unit testing.
+// I'm sure a better simulation of Mecanum drive is available somewhere.
 public class FakeHardware implements HardwareI {
     @Override
     public void updateImuPos() {
@@ -30,93 +33,112 @@ public class FakeHardware implements HardwareI {
     @Override
     public double getImuHeading(AngleUnit unit) {
         if(unit == AngleUnit.DEGREES)
-            return Math.toDegrees(Math.atan2(velocity.y, velocity.x));
+            return Math.toDegrees(Math.atan2(velocityInchesSec.y, velocityInchesSec.x));
         else
-            return Math.atan2(velocity.y, velocity.x);
+            return Math.atan2(velocityInchesSec.y, velocityInchesSec.x);
     }
 
     @Override
     public void setFrontLeftPower(double power) {
-        flpower = power;
+        frontLeftPower = power;
     }
 
     @Override
     public void setFrontRightPower(double power) {
-        frpower = power;
+        frontRightPower = power;
     }
 
     @Override
     public void setBackLeftPower(double power) {
-        blpower = power;
+        backLeftPower = power;
     }
 
     @Override
     public void setBackRightPower(double power) {
-        brpower = power;
+        backRightPower = power;
     }
 
     @Override
     public double getFrontLeftPower() {
-        return flpower;
+        return frontLeftPower;
     }
 
     @Override
     public double getFrontRightPower() {
-        return frpower;
+        return frontRightPower;
     }
 
     @Override
     public double getBackLeftPower() {
-        return blpower;
+        return backLeftPower;
     }
 
     @Override
     public double getBackRightPower() {
-        return frpower;
+        return frontRightPower;
     }
 
     @Override
     public void updateState(long timeMs) {
         // Update for simulation during testing.
 
-        long deltaTime = timeMs - lastTime;
+        long deltaTimeMs = timeMs - lastTime;
+        double deltaTimeSec = (double) deltaTimeMs/1000.0;
+        lastTime = timeMs;
 
         // Update speed scaler for each wheel based on set power.
-        double speedfl = maxSpeedInchSec * flpower;
-        double speedfr = maxSpeedInchSec * frpower;
-        double speedbl = maxSpeedInchSec * blpower;
-        double speedbr = maxSpeedInchSec * brpower;
+        double speedfl = maxSpeedInchSec * frontLeftPower;
+        double speedfr = maxSpeedInchSec * frontRightPower;
+        double speedbl = maxSpeedInchSec * backLeftPower;
+        double speedbr = maxSpeedInchSec * backRightPower;
 
         // Update the velocity vector.  Sum of the wheel direction unit vectors
         // times speed.
-        velocity = Vector2.add(
-                Vector2.mult(flWheelDv, speedfl),
-                Vector2.mult(frWheelDv, speedfr),
-                Vector2.mult(blWheelDv, speedbl),
-                Vector2.mult(brWheelDv, speedbr));
+
+        // Compute arc along wheel track circle the robot will
+        // rotate given the difference in speed between right and left sides.
+        Vector2 leftVelocity = Vector2.add(Vector2.mult(flWheelDv, speedfl), Vector2.mult(blWheelDv, speedfl));
+        Vector2 rightVelocity = Vector2.add(Vector2.mult(frWheelDv, speedfl), Vector2.mult(brWheelDv, speedfl));
+        double tangentalVelocity = leftVelocity.norm() - rightVelocity.norm();
+        double arclenTraveled = tangentalVelocity * deltaTimeSec;
+        // convert the length to radians
+        double rad = 2 * Math.PI * (arclenTraveled / wheelTrackRadiusInches);
+        double angleCurrentVelocityRad = velocityInchesSec.angle(AngleUnit.RADIANS);
+        rotation.setRotation(angleCurrentVelocityRad + rad, AngleUnit.RADIANS);
+
+        velocityInchesSec = Vector2.add(leftVelocity, rightVelocity);
+        // Rotate the velocity
+        rotation.mult(velocityInchesSec);
 
         // Update the location based on the speed and delta time.
-        location = Vector2.add(location, Vector2.mult(velocity, deltaTime/1000.0));
+        location = Vector2.add(location, Vector2.mult(velocityInchesSec, deltaTimeSec));
     }
 
     long lastTime;
 
     // direction and speed of simulated robot.  Inches/second.
-    Vector2 velocity;
+    Vector2 velocityInchesSec = new Vector2(0, 0);
 
     // Current location.
-    Vector2 location;
+    Vector2 location = new Vector2(0,0);
 
-    double flpower;
-    double frpower;
-    double blpower;
-    double brpower;
+    double frontLeftPower;
+    double frontRightPower;
+    double backLeftPower;
+    double backRightPower;
 
     // Direction unit vectors for Mecanum wheels rotation forward.
-    final Vector2 flWheelDv = new Vector2(0.7071, -0.7071);
-    final Vector2 frWheelDv = new Vector2(0.7071, 0.7071);
-    final Vector2 blWheelDv = new Vector2(0.7071, -0.7071);
+    final Vector2 flWheelDv = new Vector2(0.7071, 0.7071);
+    final Vector2 frWheelDv = new Vector2(-0.7071, 0.7071);
+    final Vector2 blWheelDv = new Vector2(-0.7071, 0.7071);
     final Vector2 brWheelDv = new Vector2(0.7071, 0.7071);
 
     double maxSpeedInchSec = 5;
+
+    // Distance from center of robot to wheels.
+    // This is also the arc length per radian used
+    // to simulate rotation of the robot given different wheel speeds.
+    double wheelTrackRadiusInches = 8;
+
+    Matrix2 rotation = new Matrix2();
 }
