@@ -12,7 +12,7 @@ import Fakes.FakeTimeSource;
 public class TestPathingPackage {
 
     @Test
-    public void TestDrive()
+    public void TestDriveForward()
     {
         FakeHardware hw = new FakeHardware();
         hw.resetImu();
@@ -24,4 +24,19 @@ public class TestPathingPackage {
         boolean result = pathing.run(10);
         assertTrue("pathing.run", result);
     }
+
+    @Test
+    public void TestDriveLeft()
+    {
+        FakeHardware hw = new FakeHardware();
+        hw.resetImu();
+        OpModeI opMode = new FakeOpMode();
+        PathController pathing = new PathController(hw, opMode, 0.9, new FakeTimeSource(), new FakeLog());
+        // Move forward 24 inches.
+        pathing.setTargetHeadingDeg(0);
+        pathing.setTargetLocation(24,0);
+        boolean result = pathing.run(10);
+        assertTrue("pathing.run", result);
+    }
+
 }

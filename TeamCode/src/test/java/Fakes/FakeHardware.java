@@ -39,9 +39,9 @@ public class FakeHardware implements HardwareI {
     public double getImuHeading(AngleUnit unit) {
         double heading;
         if(unit == AngleUnit.DEGREES)
-            heading = Math.toDegrees(Math.atan2(velocityInchesSec.x, velocityInchesSec.y));
+            heading = Math.toDegrees(imuHeading);
         else
-            heading = Math.atan2(velocityInchesSec.x, velocityInchesSec.y);
+            heading = imuHeading;
 
         return heading;
     }
@@ -119,7 +119,8 @@ public class FakeHardware implements HardwareI {
         double deltaAngleRad = 2 * Math.PI * (arclengthTraveled / wheelTrackRadiusInches);
         double angleCurrentVelocityRad = velocityInchesSec.angle(AngleUnit.RADIANS);
         double currentHeadingRad = getImuHeading(AngleUnit.RADIANS);
-        rotation.setRotation(currentHeadingRad + deltaAngleRad, AngleUnit.RADIANS);
+        imuHeading = currentHeadingRad + deltaAngleRad;
+        rotation.setRotation(imuHeading, AngleUnit.RADIANS);
 
         logger.d("FakeHardware", "leftVelocity: " + leftVelocity);
         logger.d("FakeHardware", "rightVelocity: " + rightVelocity);
@@ -160,4 +161,6 @@ public class FakeHardware implements HardwareI {
     double wheelTrackRadiusInches = 8;
 
     Matrix2 rotation = new Matrix2();
+
+    double imuHeading = 0;
 }
