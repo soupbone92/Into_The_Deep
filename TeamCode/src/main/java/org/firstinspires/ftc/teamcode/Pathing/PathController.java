@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.Pathing;
 
+import static java.lang.Math.toDegrees;
+
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -33,6 +35,8 @@ public class PathController {
         powerRampControlBl = new PowerRampController(.1, timeSource);
         powerRampControlBr = new PowerRampController(.1, timeSource);
 
+        headingPid = new PIDController(-0.01,0,0);
+        deltaTargetPid = new PIDController(0.7,0, .1);
     }
 
     public void setNominalPower(double power)
@@ -122,7 +126,7 @@ public class PathController {
 
         // Calculate rotation correction using PID.
         headingPid.setTargetPoint(targetHeadingDeg);
-        rotationScalar = headingPid.calculate(heading, timeSource);
+        rotationScalar = headingPid.calculate(toDegrees(heading), timeSource);
 
         // Clamp magnitude of rotationScalar [-0.3, 0.3]
         rotationScalar = clampRange(rotationScalar, -0.3, 0.3);
@@ -235,15 +239,10 @@ public class PathController {
     Matrix2 robotToFieldRotation = new Matrix2();
     Vector2 robotRelativePowerVector = new Vector2(0,0);
 
-    PIDController headingPid = new PIDController(0.3,0,0);
-    PIDController deltaTargetPid = new PIDController(0.7,0, .1);
+    PIDController headingPid;
+    PIDController deltaTargetPid;
     PowerRampController powerRampControlFl;
     PowerRampController powerRampControlFr;
     PowerRampController powerRampControlBl;
     PowerRampController powerRampControlBr;
 }
-
-
-
-
-

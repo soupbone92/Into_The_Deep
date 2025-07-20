@@ -39,4 +39,32 @@ public class TestPathingPackage {
         assertTrue("pathing.run", result);
     }
 
+    @Test
+    public void TestDriveDiagonal()
+    {
+        FakeHardware hw = new FakeHardware();
+        hw.resetImu();
+        OpModeI opMode = new FakeOpMode();
+        PathController pathing = new PathController(hw, opMode, 0.9, new FakeTimeSource(), new FakeLog());
+        // Move forward 24 inches.
+        pathing.setTargetHeadingDeg(0);
+        pathing.setTargetLocation(24,24);
+        boolean result = pathing.run(10);
+        assertTrue("pathing.run", result);
+    }
+
+    @Test
+    public void TestDriveRotation()
+    {
+        FakeHardware hw = new FakeHardware();
+        hw.resetImu();
+        OpModeI opMode = new FakeOpMode();
+        PathController pathing = new PathController(hw, opMode, 0.9, new FakeTimeSource(), new FakeLog());
+        // Move forward 24 inches.
+        pathing.setTargetHeadingDeg(90);
+        pathing.setTargetLocation(0,0);
+        boolean result = pathing.run(10);
+        assertTrue("pathing.run", result);
+    }
+
 }

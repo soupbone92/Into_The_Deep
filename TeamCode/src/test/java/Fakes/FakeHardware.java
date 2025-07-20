@@ -1,5 +1,8 @@
 package Fakes;
 
+import static java.lang.Math.abs;
+import static java.lang.Math.toDegrees;
+
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
@@ -39,7 +42,7 @@ public class FakeHardware implements HardwareI {
     public double getImuHeading(AngleUnit unit) {
         double heading;
         if(unit == AngleUnit.DEGREES)
-            heading = Math.toDegrees(imuHeading);
+            heading = toDegrees(imuHeading);
         else
             heading = imuHeading;
 
@@ -113,15 +116,17 @@ public class FakeHardware implements HardwareI {
         leftVelocity.scale(.5);
         Vector2 rightVelocity = Vector2.add(Vector2.mult(frWheelDv, speedFrontRight), Vector2.mult(brWheelDv, speedBackRight));
         rightVelocity.scale(.5);
-        double tangentialVelocity = leftVelocity.norm() - rightVelocity.norm();
+
+        // Only care about y components since left and right vector sums are tangent
+        // in the y direction to the robots center of rotation.
+        double tangentialVelocity = (leftVelocity.y - rightVelocity.y) * 0.5;
         double arclengthTraveled = tangentialVelocity * deltaTimeSec;
         // convert the length to radians
         double deltaAngleRad = 2 * Math.PI * (arclengthTraveled / wheelTrackRadiusInches);
-        double angleCurrentVelocityRad = velocityInchesSec.angle(AngleUnit.RADIANS);
         double currentHeadingRad = getImuHeading(AngleUnit.RADIANS);
         imuHeading = currentHeadingRad + deltaAngleRad;
         rotation.setRotation(imuHeading, AngleUnit.RADIANS);
-
+        logger.d("FakeHardware", "imuHeading: " + toDegrees(imuHeading));
         logger.d("FakeHardware", "leftVelocity: " + leftVelocity);
         logger.d("FakeHardware", "rightVelocity: " + rightVelocity);
 
