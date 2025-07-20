@@ -8,6 +8,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.teamcode.Interfaces.TimeSourceI;
 import org.firstinspires.ftc.teamcode.Math.Vector2;
 import org.firstinspires.ftc.teamcode.Pathing.PIDController;
+import org.firstinspires.ftc.teamcode.Pathing.PowerRampController;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.MockedStatic;
@@ -47,5 +48,42 @@ public class TestTeamCode {
         result.subtractInPlace(target, lastPose);
         assertEquals(14, result.x, 0.01);
         assertEquals(-10, result.y, 0.01);
+    }
+
+    @Test
+    public void testPowerRamp()
+    {
+        TimeSourceI timeSource = new FakeTimeSource();
+        timeSource.update();
+        PowerRampController controller = new PowerRampController(.1, timeSource);
+        int count = 0;
+        double value = 0.0;
+        double targetValue = 1.0;
+
+        while(Math.abs(value-targetValue) > 0.001)
+        {
+            timeSource.update();
+            value = controller.getValue(targetValue);
+            count++;
+        }
+
+        // expected is 19 here since the first getValue set the value and
+        // doesn't need to wait the 20 ms
+        assertEquals(19, count);
+        assertEquals(1.0, controller.lastValue, .001);
+
+        targetValue = 0;
+        count = 0;
+        while(Math.abs(value-targetValue) > 0.001)
+        {
+            timeSource.update();
+            value = controller.getValue(targetValue);
+            count++;
+        }
+
+        // expected is 20 here since the first decrease needs to wait
+        // the 20 ms.
+        assertEquals(20, count);
+        assertEquals(0.0, controller.lastValue, .001);
     }
 }

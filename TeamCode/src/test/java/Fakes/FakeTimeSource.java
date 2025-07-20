@@ -9,11 +9,12 @@ public class FakeTimeSource implements TimeSourceI {
     long lastTime;
     long total;
     boolean initialized = false;
+    long increment = 10;
 
     @Override
     public void update() {
         lastTime = time;
-        time += 10;
+        time += increment;
 
         if(!initialized)
         {
@@ -37,5 +38,10 @@ public class FakeTimeSource implements TimeSourceI {
     @Override
     public long deltaTimeMs() {
         return time - lastTime;
+    }
+
+    public void setIncrement(long inc)
+    {
+        increment = inc;
     }
 }

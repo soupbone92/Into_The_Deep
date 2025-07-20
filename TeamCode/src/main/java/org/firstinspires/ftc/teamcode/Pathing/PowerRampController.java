@@ -7,13 +7,14 @@ public class PowerRampController {
     public double maxChange;
     public double lastValue;
     public double lastTimeSetMs;
-    public double minTimeSec = 20;
+    public double minTimeMs = 20;
     TimeSourceI timeSource;
 
-    PowerRampController(double maxChange, TimeSourceI ts)
+    public PowerRampController(double maxChange, TimeSourceI ts)
     {
         this.maxChange = maxChange;
         timeSource = ts;
+        lastTimeSetMs = Long.MIN_VALUE;
     }
 
     public double getValue(double newValue)
@@ -21,10 +22,10 @@ public class PowerRampController {
         double currentTime = timeSource.currentTimeMillis();
         double deltaTime = (currentTime - lastTimeSetMs);
 
-        if(deltaTime < minTimeSec) {
+        if(deltaTime < minTimeMs) {
             // Wait at least minTimeSec seconds before changing again.
             // Increasing from 0 to 1 power will take 200 milisecs (0.2 seconds)
-            // if minTimeSec = 20 and maxChange = 0.1
+            // if minTimeMs = 20 and maxChange = 0.1
             return lastValue;
         }
         double delta = newValue - lastValue;
@@ -36,6 +37,7 @@ public class PowerRampController {
         }
 
         lastValue = lastValue + delta;
+        lastTimeSetMs = currentTime;
         return lastValue;
     }
 }
