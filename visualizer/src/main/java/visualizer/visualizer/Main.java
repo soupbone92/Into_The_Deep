@@ -11,7 +11,9 @@ class MyCanvas extends JPanel {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        g.drawString("Hello, World!", 50, 50);
+        //g.drawString("Hello, World!", 50, 50);
+        g.drawLine(20, 400, getSize().width-20, 400);
+        g.drawLine(400, 20, 400, getSize().height-20);
     }
 }
 
