@@ -8,13 +8,10 @@ import com.qualcomm.robotcore.hardware.IMU;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
-import org.firstinspires.ftc.teamcode.Interfaces.ImuPositionWrapper;
-
-import kotlin.NotImplementedError;
-
+import org.firstinspires.ftc.teamcode.Interfaces.ImuPositionI;
 
 // Implement an ImuWrapper for internal IMU and encoders.
-public class ImuImpl implements ImuPositionWrapper {
+public class ImuImpl implements ImuPositionI {
 
 
     public ImuImpl(HardwareMap hwmap)
@@ -65,8 +62,8 @@ public class ImuImpl implements ImuPositionWrapper {
     }
 
     @Override
-    public Pose2D getPose() {
-        throw new NotImplementedError();
+    public Pose2D getPose() throws Exception {
+        throw new Exception("not implemented");
     }
 
     private final IMU imu;

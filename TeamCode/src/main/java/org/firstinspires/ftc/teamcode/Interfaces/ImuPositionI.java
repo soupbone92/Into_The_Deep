@@ -6,7 +6,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 // Interface for accessing hardware that provides
 // header and position information.
 // Implemented by ImuImpl and PinpointImpl.
-public interface ImuPositionWrapper {
+public interface ImuPositionI {
     // Reset the IMU heading and position if possible.
     void reset();
 
@@ -22,6 +22,6 @@ public interface ImuPositionWrapper {
     // Users of ImuPositionWrapper should always call this before reading new values.
     void update();
 
-    Pose2D getPose();
+    Pose2D getPose() throws Exception;
 }
 

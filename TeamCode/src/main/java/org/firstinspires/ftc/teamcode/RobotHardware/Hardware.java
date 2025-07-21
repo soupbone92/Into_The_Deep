@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.teamcode.Interfaces.HardwareI;
-import org.firstinspires.ftc.teamcode.Interfaces.ImuPositionWrapper;
+import org.firstinspires.ftc.teamcode.Interfaces.ImuPositionI;
 import org.firstinspires.ftc.teamcode.Interfaces.TimeSourceI;
 
 // Initializes and tracks the Robot Hardware.
@@ -93,7 +93,7 @@ public class Hardware implements HardwareI {
     public Servo blueGrip;
 
     // ImuWrapper is implemented for IMU or Pinpoint.
-    public ImuPositionWrapper imuPos;
+    public ImuPositionI imuPos;
 
 
     @Override
@@ -112,8 +112,12 @@ public class Hardware implements HardwareI {
     }
 
     @Override
-    public Pose2D getImuPose() {
-        return imuPos.getPose();
+    public Pose2D getImuPose()  {
+        try {
+            return imuPos.getPose();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
