@@ -2,8 +2,6 @@ package org.firstinspires.ftc.teamcode.Pathing;
 
 import static java.lang.Math.toDegrees;
 
-import android.util.Log;
-
 import androidx.annotation.NonNull;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -14,7 +12,6 @@ import org.firstinspires.ftc.teamcode.Math.Matrix2;
 import org.firstinspires.ftc.teamcode.Math.Vector2;
 import org.firstinspires.ftc.teamcode.Interfaces.OpModeI;
 import org.firstinspires.ftc.teamcode.TelemetryHelper;
-import org.firstinspires.ftc.teamcode.Implementations.SystemTimeSource;
 import org.firstinspires.ftc.teamcode.Interfaces.HardwareI;
 import org.firstinspires.ftc.teamcode.Interfaces.TimeSourceI;
 
@@ -25,7 +22,7 @@ public class PathController {
 
     public PathController(
             HardwareI hw, OpModeI opMode, double nominalPower,
-            PidParams headingPidParams, PidParams locationPidParams,
+            PidParamCollection.ParamSetName pidParams,
             TimeSourceI ts, LogI logInterface) {
         this.hardWare = hw;
         this.opMode = opMode;
@@ -38,11 +35,10 @@ public class PathController {
         powerRampControlBl = new PowerRampController(.1, timeSource);
         powerRampControlBr = new PowerRampController(.1, timeSource);
 
-        headingPid = new PIDController(headingPidParams);
-        deltaTargetPid = new PIDController(locationPidParams);
-
-//        headingPid = new PIDController(0.01,0,0);
-//        deltaTargetPid = new PIDController(0.7,0, .1);
+        PidParamSet hps = PidParamCollection.paramsSets.get(PidParamCollection.ParamSetName.UNIT_TEST_SIM);
+        assert hps != null;
+        headingPid = new PIDController(hps.heading);
+        deltaTargetPid = new PIDController(hps.location);
     }
 
     public void setNominalPower(double power)
@@ -246,6 +242,7 @@ public class PathController {
     Matrix2 robotToFieldRotation = new Matrix2();
     Vector2 robotRelativePowerVector = new Vector2(0,0);
 
+    PidParamSet pidParams;
     PIDController headingPid;
     PIDController deltaTargetPid;
     PowerRampController powerRampControlFl;
