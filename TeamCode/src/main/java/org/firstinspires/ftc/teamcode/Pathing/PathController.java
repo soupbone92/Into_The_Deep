@@ -23,7 +23,10 @@ public class PathController {
     private final TimeSourceI timeSource;
     private final LogI log;
 
-    public PathController(HardwareI hw, OpModeI opMode, double nominalPower, TimeSourceI ts, LogI logInterface) {
+    public PathController(
+            HardwareI hw, OpModeI opMode, double nominalPower,
+            PidParams headingPidParams, PidParams locationPidParams,
+            TimeSourceI ts, LogI logInterface) {
         this.hardWare = hw;
         this.opMode = opMode;
         this.nominalPower = nominalPower;
@@ -35,8 +38,11 @@ public class PathController {
         powerRampControlBl = new PowerRampController(.1, timeSource);
         powerRampControlBr = new PowerRampController(.1, timeSource);
 
-        headingPid = new PIDController(0.01,0,0);
-        deltaTargetPid = new PIDController(0.7,0, .1);
+        headingPid = new PIDController(headingPidParams);
+        deltaTargetPid = new PIDController(locationPidParams);
+
+//        headingPid = new PIDController(0.01,0,0);
+//        deltaTargetPid = new PIDController(0.7,0, .1);
     }
 
     public void setNominalPower(double power)

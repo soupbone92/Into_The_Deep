@@ -9,6 +9,7 @@ import org.firstinspires.ftc.teamcode.Implementations.SystemTimeSource;
 import org.firstinspires.ftc.teamcode.Implementations.TelemetryWrapper;
 import org.firstinspires.ftc.teamcode.Interfaces.TelemetryI;
 import org.firstinspires.ftc.teamcode.Pathing.PathController;
+import org.firstinspires.ftc.teamcode.Pathing.PidParams;
 import org.firstinspires.ftc.teamcode.RobotHardware.Hardware;
 import org.firstinspires.ftc.teamcode.TelemetryHelper;
 
@@ -25,7 +26,9 @@ public class ExampleNewPathing extends LinearOpMode {
 
         LinearOpModeImpl ourOp = new LinearOpModeImpl(this);
 
-        PathController pathing = new PathController(hw, ourOp, 0.3, new SystemTimeSource(), new AndroidLog());
+        PathController pathing = new PathController(hw, ourOp, 0.3,
+                new PidParams(0.01, 0.0, 0.0), new PidParams(0.7, 0.0, 1.0),
+                new SystemTimeSource(), new AndroidLog());
 
         pause();
         // Move forward 24 inches.

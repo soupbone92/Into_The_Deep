@@ -9,6 +9,7 @@ import org.firstinspires.ftc.teamcode.Implementations.LinearOpModeImpl;
 import org.firstinspires.ftc.teamcode.Implementations.SystemTimeSource;
 import org.firstinspires.ftc.teamcode.Interfaces.HardwareI;
 import org.firstinspires.ftc.teamcode.Pathing.PathController;
+import org.firstinspires.ftc.teamcode.Pathing.PidParams;
 import org.firstinspires.ftc.teamcode.RobotHardware.Hardware;
 
 import java.util.zip.Adler32;
@@ -31,7 +32,10 @@ public class Rotation extends LinearOpMode {
         double targetDeg = 90.0;
         LinearOpModeImpl ourOp = new LinearOpModeImpl(this);
 
-        PathController pc = new PathController(hw, ourOp, 0.5, new SystemTimeSource(), new AndroidLog());
+        PathController pc = new PathController(
+                hw, ourOp, 0.5,
+                new PidParams(0.01, 0.0, 0.0), new PidParams(0.7, 0.0, 1.0),
+                new SystemTimeSource(), new AndroidLog());
         pc.setTargetHeadingDeg(targetDeg);
         while (!this.isStopRequested()) {
             hw.updateImuPos();
