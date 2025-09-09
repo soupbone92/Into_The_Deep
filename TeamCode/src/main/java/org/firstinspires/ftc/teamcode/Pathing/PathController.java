@@ -213,10 +213,12 @@ public class PathController {
 
             if(timeSource.totalRunningTimeMs()/1000 > timeoutSec) {
                 log.d("PathController", "run time: " + timeSource.totalRunningTimeMs());
+                hardWare.stopMotors();
                 return false;
             }
         }
         log.d("PathController", "run time: " + timeSource.totalRunningTimeMs());
+        hardWare.stopMotors();
         return true;
     }
 

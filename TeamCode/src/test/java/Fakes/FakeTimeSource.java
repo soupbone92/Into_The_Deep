@@ -40,6 +40,11 @@ public class FakeTimeSource implements TimeSourceI {
         return time - lastTime;
     }
 
+    @Override
+    public void resetTotal() {
+        total = 0;
+    }
+
     public void setIncrement(long inc)
     {
         increment = inc;

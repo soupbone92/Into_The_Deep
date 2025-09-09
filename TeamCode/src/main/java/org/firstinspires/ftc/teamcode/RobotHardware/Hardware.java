@@ -172,4 +172,12 @@ public class Hardware implements HardwareI {
         // No needed when running robot.
         // Maybe could be useful in the future?
     }
+
+    @Override
+    public void stopMotors() {
+        setFrontLeftPower(0);
+        setFrontRightPower(0);
+        setBackLeftPower(0);
+        setBackRightPower(0);
+    }
 }

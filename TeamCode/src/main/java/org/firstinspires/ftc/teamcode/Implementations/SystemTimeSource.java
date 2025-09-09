@@ -38,4 +38,9 @@ public class SystemTimeSource implements TimeSourceI {
         return time - lastTime;
     }
 
+    @Override
+    public void resetTotal() {
+        total = 0;
+    }
+
 }

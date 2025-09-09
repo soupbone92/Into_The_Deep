@@ -6,5 +6,7 @@ public interface TimeSourceI {
     long totalRunningTimeMs();
     long deltaTimeMs();
 
+    void resetTotal();
+
     // Used for debugging.  Update to the next time step.
 }

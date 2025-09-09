@@ -126,7 +126,8 @@ public class FakeHardware implements HardwareI {
         double currentHeadingRad = getImuHeading(AngleUnit.RADIANS);
         imuHeading = currentHeadingRad + deltaAngleRad;
         rotation.setRotation(imuHeading, AngleUnit.RADIANS);
-        logger.d("FakeHardware", "imuHeading: " + toDegrees(imuHeading));
+        double headingDeg = toDegrees(imuHeading);
+        logger.d("FakeHardware", "imuHeading: " + headingDeg);
         logger.d("FakeHardware", "leftVelocity: " + leftVelocity);
         logger.d("FakeHardware", "rightVelocity: " + rightVelocity);
 
@@ -139,6 +140,14 @@ public class FakeHardware implements HardwareI {
         location = Vector2.add(location, Vector2.mult(velocityInchesSec, deltaTimeSec));
         logger.d("fakeHardware","velocityInchesSec: " + velocityInchesSec.toString());
         logger.d("fakeHardware","location: " + location.toString());
+    }
+
+    @Override
+    public void stopMotors() {
+        setFrontLeftPower(0);
+        setFrontRightPower(0);
+        setBackLeftPower(0);
+        setBackRightPower(0);
     }
 
     // direction and speed of simulated robot.  Inches/second.

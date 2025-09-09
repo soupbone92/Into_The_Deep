@@ -21,4 +21,6 @@ public interface HardwareI {
     double getBackRightPower();
 
     void updateState(TimeSourceI timeSource);
+
+    void stopMotors();
 }
